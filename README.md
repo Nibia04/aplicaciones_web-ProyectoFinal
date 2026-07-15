@@ -34,6 +34,45 @@ Esta organizacion es parecida a una arquitectura por capas:
 - `domain`: entidades y reglas centrales del negocio, como `Usuario` y `Transaccion`.
 - `infrastructure`: conexion a base de datos, seguridad, JWT y herramientas externas.
 
+## Responsabilidades por capa
+
+El proyecto se esta ordenando para acercarse a una arquitectura limpia por capas:
+
+```text
+API -> Application -> Domain
+        |
+        v
+ Infrastructure
+```
+
+### `app/api`
+
+Contiene rutas HTTP, dependencias de FastAPI y traduccion de errores a respuestas HTTP.
+Esta capa debe ser delgada: recibe solicitudes, llama a casos de uso y devuelve respuestas.
+
+### `app/application`
+
+Contiene casos de uso, DTOs y servicios de aplicacion. Aqui debe vivir la orquestacion de acciones como registrar usuario, crear transaccion, listar transacciones u obtener resumen de presupuesto.
+
+### `app/domain`
+
+Contiene entidades y reglas centrales del negocio. En una arquitectura limpia estricta no debe depender de FastAPI, SQLAlchemy, JWT ni detalles de infraestructura.
+
+Nota actual: `app/domain/models.py` todavia usa SQLAlchemy. Esa deuda queda identificada para la siguiente fase.
+
+### `app/infrastructure`
+
+Contiene detalles tecnicos: base de datos, ORM, seguridad, JWT, configuracion y repositorios concretos.
+
+### `tests`
+
+Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fases se agregaran pruebas por capa.
+
+## Estado de mejora arquitectonica
+
+- Fase 1 completada: estructura base y responsabilidades de capas documentadas.
+- Siguiente paso: separar el dominio de SQLAlchemy para que `domain` quede independiente.
+
 ## Ejecutar
 
 ```bash
