@@ -283,67 +283,6 @@ tests/
 
 # Planificacion por fases
 
-## Fase 1: Ordenar la arquitectura
-
-Objetivo: que el proyecto tenga capas claras y responsabilidades separadas.
-
-Acciones:
-
-- Mantener la estructura base:
-
-```text
-app/
-  api/
-  application/
-  domain/
-  infrastructure/
-  main.py
-tests/
-```
-
-- Definir responsabilidades:
-  - `api`: rutas HTTP, dependencias HTTP y respuestas.
-  - `application`: casos de uso, DTOs internos y orquestacion.
-  - `domain`: entidades y reglas de negocio puras.
-  - `infrastructure`: base de datos, ORM, repositorios, seguridad y configuracion externa.
-  - `tests`: pruebas automatizadas.
-
-Resultado esperado:
-
-- El proyecto no solo tendra carpetas con nombres de capas, sino separacion real de responsabilidades.
-
-## Fase 2: Limpiar el dominio
-
-Objetivo: que `domain` sea independiente de SQLAlchemy, FastAPI e infraestructura.
-
-Estado: completada.
-
-Acciones:
-
-- Crear entidades puras en el dominio, por ejemplo:
-
-```text
-app/domain/entities.py
-```
-
-- Definir entidades como:
-  - `Usuario`
-  - `Transaccion`
-  - `TipoTransaccion`
-
-- Mover los modelos actuales de SQLAlchemy a infraestructura:
-
-```text
-app/infrastructure/orm_models.py
-```
-
-- Evitar que archivos dentro de `domain` importen desde `infrastructure`.
-
-- Mantener `app/domain/models.py` como modulo de compatibilidad que reexporta las entidades puras.
-
-Resultado esperado:
-
-- El dominio queda mas cercano a DDD y puede probarse sin base de datos.
 
 ## Fase 3: Crear casos de uso en Application
 
