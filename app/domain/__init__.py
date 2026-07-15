@@ -9,6 +9,5 @@ Regla:
   detalle tecnico.
 
 Nota:
-- Actualmente `models.py` aun contiene modelos SQLAlchemy. Esa deuda se
-  corrige en la Fase 2 moviendo el ORM a infraestructura.
+- Los modelos ORM de SQLAlchemy viven en `app.infrastructure.orm_models`.
 """

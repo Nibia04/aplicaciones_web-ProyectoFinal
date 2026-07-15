@@ -18,9 +18,11 @@ app/
     services/
       presupuesto_service.py
   domain/
+    entities.py
     models.py
   infrastructure/
     database.py
+    orm_models.py
     security.py
 tests/
   test_api.py
@@ -58,11 +60,11 @@ Contiene casos de uso, DTOs y servicios de aplicacion. Aqui debe vivir la orques
 
 Contiene entidades y reglas centrales del negocio. En una arquitectura limpia estricta no debe depender de FastAPI, SQLAlchemy, JWT ni detalles de infraestructura.
 
-Nota actual: `app/domain/models.py` todavia usa SQLAlchemy. Esa deuda queda identificada para la siguiente fase.
+Estado actual: el dominio ya no contiene modelos SQLAlchemy. Las entidades puras estan en `app/domain/entities.py` y `app/domain/models.py` queda como modulo de compatibilidad.
 
 ### `app/infrastructure`
 
-Contiene detalles tecnicos: base de datos, ORM, seguridad, JWT, configuracion y repositorios concretos.
+Contiene detalles tecnicos: base de datos, modelos ORM, seguridad, JWT, configuracion y repositorios concretos.
 
 ### `tests`
 
@@ -71,7 +73,8 @@ Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fa
 ## Estado de mejora arquitectonica
 
 - Fase 1 completada: estructura base y responsabilidades de capas documentadas.
-- Siguiente paso: separar el dominio de SQLAlchemy para que `domain` quede independiente.
+- Fase 2 completada: dominio separado de SQLAlchemy; los modelos ORM viven en infraestructura.
+- Siguiente paso: mover la logica de rutas a casos de uso en `app/application`.
 
 ## Ejecutar
 

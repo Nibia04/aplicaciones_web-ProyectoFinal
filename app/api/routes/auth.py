@@ -5,8 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.application.schemas import LoginRequest, TokenOut, UsuarioCreate, UsuarioOut
-from app.domain.models import Usuario
 from app.infrastructure.database import get_db
+from app.infrastructure.orm_models import Usuario
 from app.infrastructure.security import create_access_token, hash_password, verify_password
 
 router = APIRouter(prefix="/auth", tags=["Autenticacion"])

@@ -102,11 +102,10 @@ app/domain/
 
 Actualmente contiene:
 
-- `models.py`: modelos `Usuario`, `Transaccion` y `TipoTransaccion`.
+- `entities.py`: entidades puras `Usuario`, `Transaccion` y enum `TipoTransaccion`.
+- `models.py`: modulo de compatibilidad que reexporta los modelos de dominio.
 
-El problema principal es que estos modelos usan directamente SQLAlchemy y dependen de `Base`, que viene de infraestructura. Por eso el dominio no esta completamente limpio ni independiente.
-
-En una arquitectura limpia mas estricta, el dominio deberia contener entidades y reglas de negocio puras, sin depender de base de datos, ORM, FastAPI ni infraestructura.
+El dominio ya no depende de SQLAlchemy ni de `Base`. Esta capa queda preparada para pruebas unitarias y reglas de negocio puras.
 
 ### Infrastructure
 
@@ -119,9 +118,10 @@ app/infrastructure/
 Actualmente contiene:
 
 - `database.py`: configuracion de SQLite, SQLAlchemy, sesiones y `Base`.
+- `orm_models.py`: modelos SQLAlchemy `UsuarioModel` y `TransaccionModel`.
 - `security.py`: hash de password, verificacion de password, creacion y decodificacion de JWT.
 
-Esta capa cumple su funcion, pero en una mejora futura tambien deberia contener los modelos ORM y los repositorios concretos.
+Esta capa contiene los detalles tecnicos. En una mejora futura tambien deberia contener repositorios concretos.
 
 ### Testing
 
@@ -150,7 +150,6 @@ El proyecto cumple parcialmente con una arquitectura por capas porque ya tiene s
 
 Sin embargo, todavia no cumple completamente con Clean Architecture o DDD porque:
 
-- El dominio depende de infraestructura mediante SQLAlchemy.
 - La API contiene logica que deberia estar en casos de uso.
 - No existen repositorios o interfaces claras para separar aplicacion e infraestructura.
 - Los casos de uso no estan completamente separados.
@@ -209,13 +208,84 @@ La idea es que:
 - Infrastructure contenga detalles tecnicos como base de datos, ORM, JWT y repositorios.
 - Tests cubra dominio, aplicacion, API e infraestructura basica.
 
+## Referencia de estructura esperada
+
+La estructura objetivo debe tomar como referencia el ejemplo del proyecto `Abnb-main`, que separa claramente:
+
+```text
+src/
+  Api/
+  Aplicacion/
+  Dominio/
+  Infraestructura/
+  Tests/
+```
+
+Como este proyecto esta hecho en Python con FastAPI, la equivalencia sera:
+
+```text
+app/
+  api/              # equivalente a Api
+  application/      # equivalente a Aplicacion
+  domain/           # equivalente a Dominio
+  infrastructure/   # equivalente a Infraestructura
+tests/              # equivalente a Testing
+```
+
+La idea no es copiar C# literalmente, sino respetar el mismo criterio arquitectonico:
+
+- `api`: entrada HTTP, controladores/rutas y dependencias web.
+- `application`: casos de uso, comandos/consultas, DTOs y puertos.
+- `domain`: entidades, value objects, reglas de negocio, errores y contratos centrales.
+- `infrastructure`: ORM, base de datos, seguridad, JWT, repositorios concretos e integraciones.
+- `tests`: pruebas automatizadas por capa.
+
+Al avanzar las fases, se debe procurar que la organizacion final se parezca a esta forma:
+
+```text
+app/
+  api/
+    dependencies.py
+    routes/
+      auth.py
+      transacciones.py
+      presupuesto.py
+  application/
+    schemas.py
+    ports.py
+    use_cases/
+      registrar_usuario.py
+      login_usuario.py
+      crear_transaccion.py
+      listar_transacciones.py
+      obtener_transaccion.py
+      actualizar_transaccion.py
+      eliminar_transaccion.py
+      obtener_resumen_presupuesto.py
+  domain/
+    entities.py
+    errors.py
+    repositories.py
+    services.py
+  infrastructure/
+    database.py
+    orm_models.py
+    security.py
+    repositories/
+      usuario_repository_sqlalchemy.py
+      transaccion_repository_sqlalchemy.py
+tests/
+  api/
+  application/
+  domain/
+  infrastructure/
+```
+
 # Planificacion por fases
 
 ## Fase 1: Ordenar la arquitectura
 
 Objetivo: que el proyecto tenga capas claras y responsabilidades separadas.
-
-Estado: completada.
 
 Acciones:
 
@@ -238,15 +308,6 @@ tests/
   - `infrastructure`: base de datos, ORM, repositorios, seguridad y configuracion externa.
   - `tests`: pruebas automatizadas.
 
-- Documentar responsabilidades en:
-  - `README.md`
-  - `app/api/__init__.py`
-  - `app/application/__init__.py`
-  - `app/domain/__init__.py`
-  - `app/infrastructure/__init__.py`
-  - `app/api/routes/__init__.py`
-  - `app/application/services/__init__.py`
-
 Resultado esperado:
 
 - El proyecto no solo tendra carpetas con nombres de capas, sino separacion real de responsabilidades.
@@ -254,6 +315,8 @@ Resultado esperado:
 ## Fase 2: Limpiar el dominio
 
 Objetivo: que `domain` sea independiente de SQLAlchemy, FastAPI e infraestructura.
+
+Estado: completada.
 
 Acciones:
 
@@ -275,6 +338,8 @@ app/infrastructure/orm_models.py
 ```
 
 - Evitar que archivos dentro de `domain` importen desde `infrastructure`.
+
+- Mantener `app/domain/models.py` como modulo de compatibilidad que reexporta las entidades puras.
 
 Resultado esperado:
 

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.routes import auth, presupuesto, transacciones
-from app.domain import models
+from app.infrastructure import orm_models
 from app.infrastructure.database import Base, engine
 
 Base.metadata.create_all(bind=engine)

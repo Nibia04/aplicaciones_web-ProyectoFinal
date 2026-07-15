@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_current_user
 from app.application.schemas import TransaccionCreate, TransaccionOut, TransaccionUpdate
-from app.domain.models import Transaccion, Usuario
 from app.infrastructure.database import get_db
+from app.infrastructure.orm_models import Transaccion, Usuario
 
 router = APIRouter(prefix="/transacciones", tags=["Transacciones"])
 

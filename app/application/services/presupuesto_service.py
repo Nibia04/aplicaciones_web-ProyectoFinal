@@ -2,7 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.application.schemas import PresupuestoOut, ResumenDiarioOut
-from app.domain.models import TipoTransaccion, Transaccion
+from app.domain.models import TipoTransaccion
+from app.infrastructure.orm_models import Transaccion
 
 
 def construir_resumen_presupuesto(db: Session, usuario_id: int) -> PresupuestoOut:
