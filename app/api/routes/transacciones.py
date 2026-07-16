@@ -1,13 +1,18 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_current_user
+from app.application.errors import TransaccionNoEncontradaError
 from app.application.schemas import TransaccionCreate, TransaccionOut, TransaccionUpdate
+from app.application.use_cases.actualizar_transaccion import actualizar_transaccion as actualizar_transaccion_use_case
+from app.application.use_cases.crear_transaccion import crear_transaccion as crear_transaccion_use_case
+from app.application.use_cases.eliminar_transaccion import eliminar_transaccion as eliminar_transaccion_use_case
+from app.application.use_cases.listar_transacciones import listar_transacciones as listar_transacciones_use_case
+from app.application.use_cases.obtener_transaccion import obtener_transaccion as obtener_transaccion_use_case
 from app.infrastructure.database import get_db
-from app.infrastructure.orm_models import Transaccion, Usuario
+from app.infrastructure.orm_models import Usuario
 
 router = APIRouter(prefix="/transacciones", tags=["Transacciones"])
 
@@ -18,11 +23,7 @@ def crear_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    transaccion = Transaccion(**payload.model_dump(), usuario_id=usuario.id)
-    db.add(transaccion)
-    db.commit()
-    db.refresh(transaccion)
-    return transaccion
+    return crear_transaccion_use_case(payload=payload, db=db, usuario_id=usuario.id)
 
 
 @router.get("", response_model=list[TransaccionOut])
@@ -30,11 +31,7 @@ def listar_transacciones(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    return db.scalars(
-        select(Transaccion)
-        .where(Transaccion.usuario_id == usuario.id)
-        .order_by(Transaccion.fecha.desc(), Transaccion.id.desc())
-    ).all()
+    return listar_transacciones_use_case(db=db, usuario_id=usuario.id)
 
 
 @router.get("/{transaccion_id}", response_model=TransaccionOut)
@@ -43,8 +40,14 @@ def obtener_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    transaccion = _get_transaccion_usuario(db, transaccion_id, usuario.id)
-    return transaccion
+    try:
+        return obtener_transaccion_use_case(
+            db=db,
+            transaccion_id=transaccion_id,
+            usuario_id=usuario.id,
+        )
+    except TransaccionNoEncontradaError:
+        raise HTTPException(status_code=404, detail="Transaccion no encontrada")
 
 
 @router.put("/{transaccion_id}", response_model=TransaccionOut)
@@ -54,13 +57,15 @@ def actualizar_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    transaccion = _get_transaccion_usuario(db, transaccion_id, usuario.id)
-    for campo, valor in payload.model_dump(exclude_unset=True).items():
-        setattr(transaccion, campo, valor)
-
-    db.commit()
-    db.refresh(transaccion)
-    return transaccion
+    try:
+        return actualizar_transaccion_use_case(
+            transaccion_id=transaccion_id,
+            payload=payload,
+            db=db,
+            usuario_id=usuario.id,
+        )
+    except TransaccionNoEncontradaError:
+        raise HTTPException(status_code=404, detail="Transaccion no encontrada")
 
 
 @router.delete("/{transaccion_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -69,19 +74,8 @@ def eliminar_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    transaccion = _get_transaccion_usuario(db, transaccion_id, usuario.id)
-    db.delete(transaccion)
-    db.commit()
-    return None
-
-
-def _get_transaccion_usuario(db: Session, transaccion_id: int, usuario_id: int) -> Transaccion:
-    transaccion = db.scalar(
-        select(Transaccion).where(
-            Transaccion.id == transaccion_id,
-            Transaccion.usuario_id == usuario_id,
-        )
-    )
-    if transaccion is None:
+    try:
+        eliminar_transaccion_use_case(db=db, transaccion_id=transaccion_id, usuario_id=usuario.id)
+    except TransaccionNoEncontradaError:
         raise HTTPException(status_code=404, detail="Transaccion no encontrada")
-    return transaccion
+    return None

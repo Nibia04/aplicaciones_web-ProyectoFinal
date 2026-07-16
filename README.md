@@ -14,9 +14,19 @@ app/
       transacciones.py
       presupuesto.py
   application/
+    errors.py
     schemas.py
     services/
       presupuesto_service.py
+    use_cases/
+      registrar_usuario.py
+      login_usuario.py
+      crear_transaccion.py
+      listar_transacciones.py
+      obtener_transaccion.py
+      actualizar_transaccion.py
+      eliminar_transaccion.py
+      obtener_resumen_presupuesto.py
   domain/
     entities.py
     models.py
@@ -74,7 +84,8 @@ Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fa
 
 - Fase 1 completada: estructura base y responsabilidades de capas documentadas.
 - Fase 2 completada: dominio separado de SQLAlchemy; los modelos ORM viven en infraestructura.
-- Siguiente paso: mover la logica de rutas a casos de uso en `app/application`.
+- Fase 3 completada: la logica principal de rutas fue movida a casos de uso en `app/application/use_cases`.
+- Siguiente paso: crear repositorios e interfaces para desacoplar los casos de uso de SQLAlchemy.
 
 ## Ejecutar
 

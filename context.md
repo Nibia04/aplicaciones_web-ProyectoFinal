@@ -89,8 +89,10 @@ Actualmente contiene:
 
 - `schemas.py`: DTOs y modelos de entrada/salida con Pydantic.
 - `services/presupuesto_service.py`: servicio para construir el resumen de presupuesto.
+- `errors.py`: errores esperados de aplicacion.
+- `use_cases/`: casos de uso del sistema.
 
-Esta capa esta incompleta porque varios casos de uso todavia estan implementados directamente en las rutas de la API.
+Esta capa ya contiene los casos de uso principales. Todavia queda pendiente desacoplarla de SQLAlchemy mediante repositorios e interfaces.
 
 ### Domain
 
@@ -150,9 +152,8 @@ El proyecto cumple parcialmente con una arquitectura por capas porque ya tiene s
 
 Sin embargo, todavia no cumple completamente con Clean Architecture o DDD porque:
 
-- La API contiene logica que deberia estar en casos de uso.
 - No existen repositorios o interfaces claras para separar aplicacion e infraestructura.
-- Los casos de uso no estan completamente separados.
+- Los casos de uso todavia dependen directamente de SQLAlchemy y modelos ORM.
 - Las pruebas no cubren todas las capas.
 - La configuracion sensible, como `SECRET_KEY`, esta escrita directamente en codigo.
 
@@ -166,6 +167,8 @@ Ubicacion actual:
 
 ```text
 app/api/routes/auth.py
+app/application/use_cases/registrar_usuario.py
+app/application/use_cases/login_usuario.py
 ```
 
 ### 2. Gestion de transacciones
@@ -176,6 +179,11 @@ Ubicacion actual:
 
 ```text
 app/api/routes/transacciones.py
+app/application/use_cases/crear_transaccion.py
+app/application/use_cases/listar_transacciones.py
+app/application/use_cases/obtener_transaccion.py
+app/application/use_cases/actualizar_transaccion.py
+app/application/use_cases/eliminar_transaccion.py
 ```
 
 ### 3. Consulta de resumen de presupuesto
@@ -186,6 +194,7 @@ Ubicacion actual:
 
 ```text
 app/api/routes/presupuesto.py
+app/application/use_cases/obtener_resumen_presupuesto.py
 app/application/services/presupuesto_service.py
 ```
 
@@ -288,6 +297,8 @@ tests/
 
 Objetivo: mover la logica de negocio y aplicacion fuera de las rutas.
 
+Estado: completada.
+
 Acciones:
 
 - Crear una carpeta de casos de uso:
@@ -310,6 +321,14 @@ obtener_resumen_presupuesto.py
 ```
 
 - Hacer que las rutas llamen a estos casos de uso en lugar de ejecutar toda la logica directamente.
+
+- Crear errores de aplicacion en:
+
+```text
+app/application/errors.py
+```
+
+- Dejar la capa API encargada de traducir errores de aplicacion a respuestas HTTP.
 
 Resultado esperado:
 

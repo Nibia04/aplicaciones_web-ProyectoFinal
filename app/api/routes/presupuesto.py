@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_current_user
-from app.application.services.presupuesto_service import construir_resumen_presupuesto
 from app.application.schemas import PresupuestoOut
+from app.application.use_cases.obtener_resumen_presupuesto import obtener_resumen_presupuesto
 from app.infrastructure.database import get_db
 from app.infrastructure.orm_models import Usuario
 
@@ -17,4 +17,4 @@ def obtener_resumen(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    return construir_resumen_presupuesto(db=db, usuario_id=usuario.id)
+    return obtener_resumen_presupuesto(db=db, usuario_id=usuario.id)
