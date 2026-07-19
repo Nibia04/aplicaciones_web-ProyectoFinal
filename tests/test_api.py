@@ -39,6 +39,43 @@ def test_health_check():
     assert response.json() == {"status": "ok"}
 
 
+def test_registro_con_email_duplicado():
+    usuario = {
+        "nombre": "Carlos",
+        "email": "carlos@example.com",
+        "password": "clave123",
+    }
+
+    primer_registro = client.post("/auth/registro", json=usuario)
+    segundo_registro = client.post("/auth/registro", json=usuario)
+
+    assert primer_registro.status_code == 201
+    assert segundo_registro.status_code == 409
+    assert segundo_registro.json() == {"detail": "El email ya esta registrado"}
+
+
+def test_login_con_password_incorrecto():
+    client.post(
+        "/auth/registro",
+        json={
+            "nombre": "Maria",
+            "email": "maria@example.com",
+            "password": "clave456",
+        },
+    )
+
+    response = client.post(
+        "/auth/login",
+        json={
+            "email": "maria@example.com",
+            "password": "password-incorrecto",
+        },
+    )
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Credenciales invalidas"}
+
+
 def test_registro_login_crear_transaccion_y_resumen():
     registro_response = client.post(
         "/auth/registro",
