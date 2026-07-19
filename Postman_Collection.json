@@ -25,9 +25,14 @@
             "url": {
               "raw": "http://localhost:8000/auth/registro",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["auth", "registro"]
+              "path": [
+                "auth",
+                "registro"
+              ]
             }
           }
         },
@@ -48,9 +53,14 @@
             "url": {
               "raw": "http://localhost:8000/auth/login",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["auth", "login"]
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         }
@@ -80,9 +90,13 @@
             "url": {
               "raw": "http://localhost:8000/transacciones",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones"]
+              "path": [
+                "transacciones"
+              ]
             }
           }
         },
@@ -107,9 +121,13 @@
             "url": {
               "raw": "http://localhost:8000/transacciones",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones"]
+              "path": [
+                "transacciones"
+              ]
             }
           }
         },
@@ -134,9 +152,13 @@
             "url": {
               "raw": "http://localhost:8000/transacciones",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones"]
+              "path": [
+                "transacciones"
+              ]
             }
           }
         },
@@ -161,9 +183,13 @@
             "url": {
               "raw": "http://localhost:8000/transacciones",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones"]
+              "path": [
+                "transacciones"
+              ]
             }
           }
         },
@@ -180,9 +206,13 @@
             "url": {
               "raw": "http://localhost:8000/transacciones",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones"]
+              "path": [
+                "transacciones"
+              ]
             }
           }
         },
@@ -199,9 +229,14 @@
             "url": {
               "raw": "http://localhost:8000/transacciones/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones", "1"]
+              "path": [
+                "transacciones",
+                "1"
+              ]
             }
           }
         },
@@ -226,9 +261,14 @@
             "url": {
               "raw": "http://localhost:8000/transacciones/2",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones", "2"]
+              "path": [
+                "transacciones",
+                "2"
+              ]
             }
           }
         },
@@ -245,9 +285,14 @@
             "url": {
               "raw": "http://localhost:8000/transacciones/3",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["transacciones", "3"]
+              "path": [
+                "transacciones",
+                "3"
+              ]
             }
           }
         }
@@ -269,9 +314,14 @@
             "url": {
               "raw": "http://localhost:8000/presupuesto/resumen",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["presupuesto", "resumen"]
+              "path": [
+                "presupuesto",
+                "resumen"
+              ]
             }
           }
         }
@@ -287,9 +337,13 @@
             "url": {
               "raw": "http://localhost:8000/health",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": ["health"]
+              "path": [
+                "health"
+              ]
             }
           }
         },
@@ -300,9 +354,13 @@
             "url": {
               "raw": "http://localhost:8000/",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "8000",
-              "path": [""]
+              "path": [
+                ""
+              ]
             }
           }
         }

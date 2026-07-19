@@ -316,7 +316,7 @@ curl -X POST "http://localhost:8000/auth/login" \
 curl -X GET "http://localhost:8000/transacciones"
 ```
 
-**Respuesta esperada (403):** 
+**Respuesta esperada (403):**
 ```json
 {
   "detail": "Not authenticated"
@@ -488,4 +488,3 @@ python -m uvicorn app.main:app --reload
 | `"Credenciales invalidas"` | Revisa email y password sean correctos |
 | `"Transaccion no encontrada"` | El ID de la transacción no existe o fue eliminada |
 | `Validation error` | Verifica que los datos cumplan los requisitos (monto > 0, email válido, etc.) |
-

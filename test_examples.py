@@ -61,7 +61,7 @@ def test_registration():
     response = requests.post(f"{BASE_URL}/auth/registro", json=payload)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     if response.status_code == 201:
         print_success("Usuario registrado correctamente")
         return response.json()
@@ -79,7 +79,7 @@ def test_login(email: str, password: str):
     response = requests.post(f"{BASE_URL}/auth/login", json=payload)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     if response.status_code == 200:
         token = response.json()["access_token"]
         print_success(f"Token obtenido: {token[:20]}...")
@@ -101,7 +101,7 @@ def test_create_transaction(token: str, tipo: str, monto: float, descripcion: st
     response = requests.post(f"{BASE_URL}/transacciones", json=payload, headers=headers)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     if response.status_code == 201:
         print_success(f"{tipo.capitalize()} registrado: ${monto}")
         return response.json()
@@ -116,7 +116,7 @@ def test_list_transactions(token: str):
     response = requests.get(f"{BASE_URL}/transacciones", headers=headers)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     if response.status_code == 200:
         transacciones = response.json()
         print_success(f"Total de transacciones: {len(transacciones)}")
@@ -152,7 +152,7 @@ def test_budget_summary(token: str):
     response = requests.get(f"{BASE_URL}/presupuesto/resumen", headers=headers)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     if response.status_code == 200:
         data = response.json()
         print_success(f"Saldo actual: ${data.get('saldo_actual', 0)}")
@@ -165,7 +165,7 @@ def test_delete_transaction(token: str, transaction_id: int):
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.delete(f"{BASE_URL}/transacciones/{transaction_id}", headers=headers)
     print(f"Status: {response.status_code}")
-    
+
     if response.status_code == 204:
         print_success("Transacción eliminada correctamente")
     else:
@@ -174,7 +174,7 @@ def test_delete_transaction(token: str, transaction_id: int):
 def test_error_cases(token: str):
     """Pruebas de casos de error"""
     print_header("10. Pruebas de Errores")
-    
+
     # Transacción con monto negativo
     print("\n--- Intento: Monto negativo ---")
     headers = {"Authorization": f"Bearer {token}"}
@@ -188,13 +188,13 @@ def test_error_cases(token: str):
     response = requests.post(f"{BASE_URL}/transacciones", json=payload, headers=headers)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     # ID de transacción que no existe
     print("\n--- Intento: Transacción inexistente ---")
     response = requests.get(f"{BASE_URL}/transacciones/9999", headers=headers)
     print(f"Status: {response.status_code}")
     print_response(response)
-    
+
     # Sin autenticación
     print("\n--- Intento: Sin token de autenticación ---")
     response = requests.get(f"{BASE_URL}/transacciones")
@@ -204,48 +204,48 @@ def test_error_cases(token: str):
 def main():
     """Ejecutar todas las pruebas"""
     print(f"\n{Colors.YELLOW}🚀 Iniciando pruebas de API de Presupuesto Diario{Colors.END}")
-    
+
     # 1. Health check
     if not test_health():
         return
-    
+
     # 2. Registrar usuario
     usuario = test_registration()
     if not usuario:
         return
-    
+
     # 3. Login
     token = test_login(usuario["email"], "securepass123")
     if not token:
         return
-    
+
     # 4. Crear transacciones
     print_header("4. Crear Transacciones")
     transaccion1 = test_create_transaction(token, "ingreso", 3000, "Salario mensual", "Salario")
     test_create_transaction(token, "gasto", 50, "Almuerzo", "Comida")
     test_create_transaction(token, "gasto", 25, "Taxi al trabajo", "Transporte")
     test_create_transaction(token, "gasto", 100, "Recarga de teléfono", "Servicios")
-    
+
     # 5. Listar transacciones
     transacciones = test_list_transactions(token)
-    
+
     # 6. Obtener transacción específica
     if transacciones:
         test_get_transaction(token, transacciones[0]["id"])
-        
+
         # 7. Actualizar transacción
         test_update_transaction(token, transacciones[0]["id"])
-    
+
     # 8. Resumen de presupuesto
     test_budget_summary(token)
-    
+
     # 9. Eliminar transacción
     if len(transacciones) > 3:
         test_delete_transaction(token, transacciones[3]["id"])
-    
+
     # 10. Casos de error
     test_error_cases(token)
-    
+
     print(f"\n{Colors.GREEN}✓ Pruebas completadas{Colors.END}\n")
 
 if __name__ == "__main__":
