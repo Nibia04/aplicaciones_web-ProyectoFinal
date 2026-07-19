@@ -203,7 +203,7 @@ def test_error_cases(token: str):
 
 def main():
     """Ejecutar todas las pruebas"""
-    print(f"\n{Colors.YELLOW}🚀 Iniciando pruebas de API de Presupuesto Diario{Colors.END}")
+    print(f"\n{Colors.YELLOW}Iniciando pruebas de API de Presupuesto Diario{Colors.END}")
 
     # 1. Health check
     if not test_health():

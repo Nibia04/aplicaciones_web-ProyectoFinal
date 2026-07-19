@@ -1,18 +1,18 @@
 # Ejemplos de Prueba - Gestor de Presupuesto Diario
 
-## 📋 Descripción de la Aplicación
+## Descripción de la Aplicación
 
 API FastAPI para gestionar **ingresos y gastos** diarios. Los usuarios pueden:
-- ✅ Registrarse e iniciar sesión
-- ✅ Crear transacciones (ingresos/gastos)
-- ✅ Consultar y actualizar transacciones
-- ✅ Ver resumen de presupuesto diario
+- Registrarse e iniciar sesión
+- Crear transacciones (ingresos/gastos)
+- Consultar y actualizar transacciones
+- Ver resumen de presupuesto diario
 
 **Tipos de transacción:** `ingreso` | `gasto`
 
 ---
 
-## 🚀 Endpoints Principales
+## Endpoints Principales
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
@@ -28,7 +28,7 @@ API FastAPI para gestionar **ingresos y gastos** diarios. Los usuarios pueden:
 
 ---
 
-## 💻 Ejemplos con cURL
+## Ejemplos con cURL
 
 ### 1️⃣ Registrar un Usuario
 
@@ -72,7 +72,7 @@ curl -X POST "http://localhost:8000/auth/login" \
 }
 ```
 
-💾 **Guardar el token** para usar en los siguientes requests:
+**Guardar el token** para usar en los siguientes requests:
 ```bash
 TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
@@ -267,9 +267,9 @@ curl -X GET "http://localhost:8000/presupuesto/resumen" \
 
 ---
 
-## 🧪 Pruebas de Validación
+## Pruebas de Validación
 
-### ❌ Registrar con email duplicado
+### Registrar con email duplicado
 
 ```bash
 curl -X POST "http://localhost:8000/auth/registro" \
@@ -290,7 +290,7 @@ curl -X POST "http://localhost:8000/auth/registro" \
 
 ---
 
-### ❌ Login con credenciales incorrectas
+### Login con credenciales incorrectas
 
 ```bash
 curl -X POST "http://localhost:8000/auth/login" \
@@ -310,7 +310,7 @@ curl -X POST "http://localhost:8000/auth/login" \
 
 ---
 
-### ❌ Acceder a transacción sin autenticación
+### Acceder a transacción sin autenticación
 
 ```bash
 curl -X GET "http://localhost:8000/transacciones"
@@ -325,7 +325,7 @@ curl -X GET "http://localhost:8000/transacciones"
 
 ---
 
-### ❌ Crear transacción con monto negativo
+### Crear transacción con monto negativo
 
 ```bash
 curl -X POST "http://localhost:8000/transacciones" \
@@ -344,7 +344,7 @@ curl -X POST "http://localhost:8000/transacciones" \
 
 ---
 
-### ❌ Obtener transacción que no existe
+### Obtener transacción que no existe
 
 ```bash
 curl -X GET "http://localhost:8000/transacciones/999" \
@@ -360,7 +360,7 @@ curl -X GET "http://localhost:8000/transacciones/999" \
 
 ---
 
-## 📝 Script de Prueba Completo en Bash
+## Script de Prueba Completo en Bash
 
 Crea un archivo `prueba_api.sh`:
 
@@ -450,7 +450,7 @@ chmod +x prueba_api.sh
 
 ---
 
-## 🔧 Requisitos para Ejecutar
+## Requisitos para Ejecutar
 
 1. **Asegúrate de que el servidor está corriendo:**
 ```bash
@@ -464,22 +464,22 @@ python -m uvicorn app.main:app --reload
 
 ---
 
-## 📊 Flujo Recomendado de Prueba
+## Flujo Recomendado de Prueba
 
-1. ✅ Verificar salud: `GET /health`
-2. ✅ Registrar usuario
-3. ✅ Iniciar sesión (obtener token)
-4. ✅ Crear ingresos
-5. ✅ Crear gastos
-6. ✅ Listar transacciones
-7. ✅ Actualizar una transacción
-8. ✅ Ver resumen
-9. ✅ Eliminar una transacción
-10. ✅ Verificar resumen actualizado
+1. Verificar salud: `GET /health`
+2. Registrar usuario
+3. Iniciar sesión (obtener token)
+4. Crear ingresos
+5. Crear gastos
+6. Listar transacciones
+7. Actualizar una transacción
+8. Ver resumen
+9. Eliminar una transacción
+10. Verificar resumen actualizado
 
 ---
 
-## 🐛 Troubleshooting
+## Solución de problemas
 
 | Error | Solución |
 |-------|----------|
