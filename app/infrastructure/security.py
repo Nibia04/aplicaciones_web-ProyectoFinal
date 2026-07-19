@@ -30,3 +30,19 @@ def decode_access_token(token: str) -> str | None:
         return payload.get("sub")
     except JWTError:
         return None
+
+
+class PasslibPasswordHasher:
+    def hash(self, password: str) -> str:
+        return hash_password(password)
+
+    def verificar(self, password_plano: str, password_hash: str) -> bool:
+        return verify_password(password_plano, password_hash)
+
+
+class JwtTokenService:
+    def crear_access_token(self, subject: str) -> str:
+        return create_access_token(subject)
+
+    def decodificar_access_token(self, token: str) -> str | None:
+        return decode_access_token(token)

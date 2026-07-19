@@ -1,18 +1,8 @@
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from app.application.schemas import PresupuestoOut, ResumenDiarioOut
 from app.domain.models import TipoTransaccion
-from app.infrastructure.orm_models import Transaccion
 
 
-def construir_resumen_presupuesto(db: Session, usuario_id: int) -> PresupuestoOut:
-    transacciones = db.scalars(
-        select(Transaccion)
-        .where(Transaccion.usuario_id == usuario_id)
-        .order_by(Transaccion.fecha.asc())
-    ).all()
-
+def construir_resumen_presupuesto(transacciones) -> PresupuestoOut:
     total_ingresos = sum(t.monto for t in transacciones if t.tipo == TipoTransaccion.ingreso)
     total_gastos = sum(t.monto for t in transacciones if t.tipo == TipoTransaccion.gasto)
 

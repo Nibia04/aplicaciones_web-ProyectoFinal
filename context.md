@@ -88,11 +88,12 @@ app/application/
 Actualmente contiene:
 
 - `schemas.py`: DTOs y modelos de entrada/salida con Pydantic.
+- `ports.py`: contratos de repositorios y servicios externos.
 - `services/presupuesto_service.py`: servicio para construir el resumen de presupuesto.
 - `errors.py`: errores esperados de aplicacion.
 - `use_cases/`: casos de uso del sistema.
 
-Esta capa ya contiene los casos de uso principales. Todavia queda pendiente desacoplarla de SQLAlchemy mediante repositorios e interfaces.
+Esta capa ya contiene los casos de uso principales y depende de interfaces, no de SQLAlchemy.
 
 ### Domain
 
@@ -121,9 +122,11 @@ Actualmente contiene:
 
 - `database.py`: configuracion de SQLite, SQLAlchemy, sesiones y `Base`.
 - `orm_models.py`: modelos SQLAlchemy `UsuarioModel` y `TransaccionModel`.
+- `repositories/usuario_repository_sqlalchemy.py`: repositorio concreto de usuarios.
+- `repositories/transaccion_repository_sqlalchemy.py`: repositorio concreto de transacciones.
 - `security.py`: hash de password, verificacion de password, creacion y decodificacion de JWT.
 
-Esta capa contiene los detalles tecnicos. En una mejora futura tambien deberia contener repositorios concretos.
+Esta capa contiene los detalles tecnicos y las implementaciones concretas de los puertos definidos en aplicacion.
 
 ### Testing
 
@@ -152,8 +155,6 @@ El proyecto cumple parcialmente con una arquitectura por capas porque ya tiene s
 
 Sin embargo, todavia no cumple completamente con Clean Architecture o DDD porque:
 
-- No existen repositorios o interfaces claras para separar aplicacion e infraestructura.
-- Los casos de uso todavia dependen directamente de SQLAlchemy y modelos ORM.
 - Las pruebas no cubren todas las capas.
 - La configuracion sensible, como `SECRET_KEY`, esta escrita directamente en codigo.
 
@@ -338,6 +339,8 @@ Resultado esperado:
 
 Objetivo: desacoplar los casos de uso de SQLAlchemy.
 
+Estado: completada.
+
 Acciones:
 
 - Crear contratos o interfaces para repositorios:
@@ -357,6 +360,8 @@ app/domain/repositories.py
 ```text
 UsuarioRepository
 TransaccionRepository
+PasswordHasher
+TokenService
 ```
 
 - Crear implementaciones concretas con SQLAlchemy en infraestructura:
@@ -366,6 +371,10 @@ app/infrastructure/repositories/
   usuario_repository_sqlalchemy.py
   transaccion_repository_sqlalchemy.py
 ```
+
+- Actualizar los casos de uso para recibir repositorios y servicios por interfaz.
+- Mantener SQLAlchemy solamente en infraestructura.
+- Mantener la API como punto de composicion que crea los repositorios concretos.
 
 Resultado esperado:
 

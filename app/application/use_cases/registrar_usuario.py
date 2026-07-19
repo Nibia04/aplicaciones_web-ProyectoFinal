@@ -1,23 +1,18 @@
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from app.application.errors import EmailYaRegistradoError
+from app.application.ports import PasswordHasher, UsuarioRepository
 from app.application.schemas import UsuarioCreate
-from app.infrastructure.orm_models import Usuario
-from app.infrastructure.security import hash_password
 
 
-def registrar_usuario(payload: UsuarioCreate, db: Session) -> Usuario:
-    existe = db.scalar(select(Usuario).where(Usuario.email == payload.email))
-    if existe:
+def registrar_usuario(
+    payload: UsuarioCreate,
+    usuarios: UsuarioRepository,
+    password_hasher: PasswordHasher,
+):
+    if usuarios.obtener_por_email(payload.email):
         raise EmailYaRegistradoError("El email ya esta registrado")
 
-    usuario = Usuario(
+    return usuarios.crear(
         nombre=payload.nombre,
         email=payload.email,
-        password_hash=hash_password(payload.password),
+        password_hash=password_hasher.hash(payload.password),
     )
-    db.add(usuario)
-    db.commit()
-    db.refresh(usuario)
-    return usuario

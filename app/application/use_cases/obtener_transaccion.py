@@ -1,21 +1,15 @@
-from sqlalchemy import select
-from sqlalchemy.orm import Session
+from typing import Any
 
 from app.application.errors import TransaccionNoEncontradaError
-from app.infrastructure.orm_models import Transaccion
+from app.application.ports import TransaccionRepository
 
 
 def obtener_transaccion(
-    db: Session,
+    transacciones: TransaccionRepository,
     transaccion_id: int,
     usuario_id: int,
-) -> Transaccion:
-    transaccion = db.scalar(
-        select(Transaccion).where(
-            Transaccion.id == transaccion_id,
-            Transaccion.usuario_id == usuario_id,
-        )
-    )
+) -> Any:
+    transaccion = transacciones.obtener_por_id_y_usuario(transaccion_id, usuario_id)
     if transaccion is None:
         raise TransaccionNoEncontradaError("Transaccion no encontrada")
     return transaccion

@@ -13,6 +13,9 @@ from app.application.use_cases.listar_transacciones import listar_transacciones 
 from app.application.use_cases.obtener_transaccion import obtener_transaccion as obtener_transaccion_use_case
 from app.infrastructure.database import get_db
 from app.infrastructure.orm_models import Usuario
+from app.infrastructure.repositories.transaccion_repository_sqlalchemy import (
+    TransaccionRepositorySqlAlchemy,
+)
 
 router = APIRouter(prefix="/transacciones", tags=["Transacciones"])
 
@@ -23,7 +26,12 @@ def crear_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    return crear_transaccion_use_case(payload=payload, db=db, usuario_id=usuario.id)
+    transacciones = TransaccionRepositorySqlAlchemy(db)
+    return crear_transaccion_use_case(
+        payload=payload,
+        transacciones=transacciones,
+        usuario_id=usuario.id,
+    )
 
 
 @router.get("", response_model=list[TransaccionOut])
@@ -31,7 +39,8 @@ def listar_transacciones(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
-    return listar_transacciones_use_case(db=db, usuario_id=usuario.id)
+    transacciones = TransaccionRepositorySqlAlchemy(db)
+    return listar_transacciones_use_case(transacciones=transacciones, usuario_id=usuario.id)
 
 
 @router.get("/{transaccion_id}", response_model=TransaccionOut)
@@ -40,9 +49,10 @@ def obtener_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
+    transacciones = TransaccionRepositorySqlAlchemy(db)
     try:
         return obtener_transaccion_use_case(
-            db=db,
+            transacciones=transacciones,
             transaccion_id=transaccion_id,
             usuario_id=usuario.id,
         )
@@ -57,11 +67,12 @@ def actualizar_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
+    transacciones = TransaccionRepositorySqlAlchemy(db)
     try:
         return actualizar_transaccion_use_case(
             transaccion_id=transaccion_id,
             payload=payload,
-            db=db,
+            transacciones=transacciones,
             usuario_id=usuario.id,
         )
     except TransaccionNoEncontradaError:
@@ -74,8 +85,13 @@ def eliminar_transaccion(
     db: Annotated[Session, Depends(get_db)],
     usuario: Annotated[Usuario, Depends(get_current_user)],
 ):
+    transacciones = TransaccionRepositorySqlAlchemy(db)
     try:
-        eliminar_transaccion_use_case(db=db, transaccion_id=transaccion_id, usuario_id=usuario.id)
+        eliminar_transaccion_use_case(
+            transacciones=transacciones,
+            transaccion_id=transaccion_id,
+            usuario_id=usuario.id,
+        )
     except TransaccionNoEncontradaError:
         raise HTTPException(status_code=404, detail="Transaccion no encontrada")
     return None

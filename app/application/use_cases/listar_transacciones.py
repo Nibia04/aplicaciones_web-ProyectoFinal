@@ -1,12 +1,10 @@
-from sqlalchemy import select
-from sqlalchemy.orm import Session
+from typing import Any
 
-from app.infrastructure.orm_models import Transaccion
+from app.application.ports import TransaccionRepository
 
 
-def listar_transacciones(db: Session, usuario_id: int) -> list[Transaccion]:
-    return db.scalars(
-        select(Transaccion)
-        .where(Transaccion.usuario_id == usuario_id)
-        .order_by(Transaccion.fecha.desc(), Transaccion.id.desc())
-    ).all()
+def listar_transacciones(
+    transacciones: TransaccionRepository,
+    usuario_id: int,
+) -> list[Any]:
+    return transacciones.listar_por_usuario(usuario_id)

@@ -15,6 +15,7 @@ app/
       presupuesto.py
   application/
     errors.py
+    ports.py
     schemas.py
     services/
       presupuesto_service.py
@@ -33,6 +34,9 @@ app/
   infrastructure/
     database.py
     orm_models.py
+    repositories/
+      usuario_repository_sqlalchemy.py
+      transaccion_repository_sqlalchemy.py
     security.py
 tests/
   test_api.py
@@ -64,7 +68,7 @@ Esta capa debe ser delgada: recibe solicitudes, llama a casos de uso y devuelve 
 
 ### `app/application`
 
-Contiene casos de uso, DTOs y servicios de aplicacion. Aqui debe vivir la orquestacion de acciones como registrar usuario, crear transaccion, listar transacciones u obtener resumen de presupuesto.
+Contiene casos de uso, DTOs, puertos e interfaces de aplicacion. Aqui vive la orquestacion de acciones como registrar usuario, crear transaccion, listar transacciones u obtener resumen de presupuesto.
 
 ### `app/domain`
 
@@ -85,7 +89,8 @@ Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fa
 - Fase 1 completada: estructura base y responsabilidades de capas documentadas.
 - Fase 2 completada: dominio separado de SQLAlchemy; los modelos ORM viven en infraestructura.
 - Fase 3 completada: la logica principal de rutas fue movida a casos de uso en `app/application/use_cases`.
-- Siguiente paso: crear repositorios e interfaces para desacoplar los casos de uso de SQLAlchemy.
+- Fase 4 completada: casos de uso desacoplados de SQLAlchemy mediante puertos e implementaciones de repositorio.
+- Siguiente paso: mejorar la API y estandarizar respuestas/errores.
 
 ## Ejecutar
 
