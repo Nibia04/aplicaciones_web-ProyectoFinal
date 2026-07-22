@@ -1,3 +1,3 @@
 namespace Presupuesto.Application.Usuarios.RegistrarUsuario;
 
-public sealed record RegistrarUsuarioCommand(string Nombre, string Email, string Password);
+public sealed record RegistrarUsuarioCommand(string Nombre, string Email, string Contrasena);

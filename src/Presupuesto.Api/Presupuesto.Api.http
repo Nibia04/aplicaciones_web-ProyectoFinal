@@ -12,7 +12,7 @@ Content-Type: application/json
 {
   "nombre": "Ana",
   "email": "ana@example.com",
-  "password": "secreto123"
+  "contrasena": "secreto123"
 }
 
 ### Login
@@ -21,7 +21,7 @@ Content-Type: application/json
 
 {
   "email": "ana@example.com",
-  "password": "secreto123"
+  "contrasena": "secreto123"
 }
 
 ### Crear transaccion

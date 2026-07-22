@@ -1,4 +1,4 @@
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 
 namespace Presupuesto.Domain.Usuarios;
 
@@ -8,14 +8,14 @@ public sealed record Nombre
 
     public string Value { get; }
 
-    public static Result<Nombre> Create(string value)
+    public static Resultado<Nombre> Crear(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || value.Trim().Length < 2)
         {
-            return Result.Failure<Nombre>(UsuarioErrors.NombreInvalido);
+            return Resultado.Fallo<Nombre>(ErroresUsuario.NombreInvalido);
         }
 
-        return Result.Success(new Nombre(value.Trim()));
+        return Resultado.Exito(new Nombre(value.Trim()));
     }
 
     public override string ToString() => Value;

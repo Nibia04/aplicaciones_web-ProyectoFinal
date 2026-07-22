@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Application.Presupuestos.ObtenerResumenPresupuesto;
 using Presupuesto.Application.Transacciones.ActualizarTransaccion;
 using Presupuesto.Application.Transacciones.CrearTransaccion;

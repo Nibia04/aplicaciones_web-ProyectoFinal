@@ -23,18 +23,18 @@ public sealed class AspireEndToEndTests
         {
             nombre = "Ana",
             email = "aspire@example.com",
-            password = "secreto123"
+            contrasena = "secreto123"
         });
         registro.EnsureSuccessStatusCode();
 
         var login = await client.PostAsJsonAsync("/auth/login", new
         {
             email = "aspire@example.com",
-            password = "secreto123"
+            contrasena = "secreto123"
         });
         login.EnsureSuccessStatusCode();
 
-        var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
+        var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.TokenAcceso;
         client.DefaultRequestHeaders.Authorization = new("Bearer", token);
 
         var transaccion = await client.PostAsJsonAsync("/transacciones", new
@@ -74,6 +74,6 @@ public sealed class AspireEndToEndTests
         }
     }
 
-    private sealed record TokenResponse(string AccessToken, string TokenType);
+    private sealed record TokenResponse(string TokenAcceso, string TipoToken);
     private sealed record ResumenResponse(decimal SaldoActual, decimal TotalIngresos, decimal TotalGastos);
 }

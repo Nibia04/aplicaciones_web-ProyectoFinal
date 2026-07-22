@@ -1,6 +1,6 @@
-namespace Presupuesto.Infrastructure.Authentication;
+namespace Presupuesto.Infrastructure.Autenticacion;
 
-public sealed class JwtOptions
+public sealed class OpcionesJwt
 {
     public const string SectionName = "Jwt";
 

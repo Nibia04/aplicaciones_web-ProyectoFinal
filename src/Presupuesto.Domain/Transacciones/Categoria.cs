@@ -1,4 +1,4 @@
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 
 namespace Presupuesto.Domain.Transacciones;
 
@@ -8,14 +8,14 @@ public sealed record Categoria
 
     public string Value { get; }
 
-    public static Result<Categoria> Create(string value)
+    public static Resultado<Categoria> Crear(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length > 100)
         {
-            return Result.Failure<Categoria>(TransaccionErrors.CategoriaInvalida);
+            return Resultado.Fallo<Categoria>(ErroresTransaccion.CategoriaInvalida);
         }
 
-        return Result.Success(new Categoria(value.Trim()));
+        return Resultado.Exito(new Categoria(value.Trim()));
     }
 
     public override string ToString() => Value;

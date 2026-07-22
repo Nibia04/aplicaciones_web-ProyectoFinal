@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Presupuesto.Domain.Usuarios;
 
-namespace Presupuesto.Infrastructure.Database.Configurations;
+namespace Presupuesto.Infrastructure.Database.Configuraciones;
 
-public sealed class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
+public sealed class ConfiguracionUsuario : IEntityTypeConfiguration<Usuario>
 {
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
@@ -28,8 +28,8 @@ public sealed class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             email.HasIndex(e => e.Value).IsUnique();
         });
 
-        builder.Property(usuario => usuario.PasswordHash)
-            .HasColumnName("password_hash")
+        builder.Property(usuario => usuario.HashContrasena)
+            .HasColumnName("hash_contrasena")
             .HasMaxLength(512)
             .IsRequired();
 
@@ -37,7 +37,7 @@ public sealed class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .HasColumnName("creado_en_utc")
             .IsRequired();
 
-        builder.Ignore(usuario => usuario.DomainEvents);
+        builder.Ignore(usuario => usuario.EventosDominio);
         builder.Metadata.FindNavigation(nameof(Usuario.Transacciones))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
     }

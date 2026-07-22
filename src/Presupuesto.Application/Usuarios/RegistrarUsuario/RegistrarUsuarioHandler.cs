@@ -1,34 +1,34 @@
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Application.Dtos;
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 using Presupuesto.Domain.Usuarios;
 
 namespace Presupuesto.Application.Usuarios.RegistrarUsuario;
 
 public sealed class RegistrarUsuarioHandler(
-    IUsuarioRepository usuarios,
-    IPasswordHasher passwordHasher,
-    IUnitOfWork unitOfWork) : ICommandHandler<RegistrarUsuarioCommand, UsuarioDto>
+    IRepositorioUsuario usuarios,
+    IServicioHashContrasena hashContrasenaer,
+    IUnidadDeTrabajo unidadDeTrabajo) : IManejadorComando<RegistrarUsuarioCommand, UsuarioDto>
 {
-    public async Task<Result<UsuarioDto>> Handle(RegistrarUsuarioCommand command, CancellationToken cancellationToken = default)
+    public async Task<Resultado<UsuarioDto>> Handle(RegistrarUsuarioCommand command, CancellationToken cancellationToken = default)
     {
-        var nombre = Nombre.Create(command.Nombre);
-        if (nombre.IsFailure) return Result.Failure<UsuarioDto>(nombre.Error);
+        var nombre = Nombre.Crear(command.Nombre);
+        if (nombre.EsFallo) return Resultado.Fallo<UsuarioDto>(nombre.Error);
 
-        var email = Email.Create(command.Email);
-        if (email.IsFailure) return Result.Failure<UsuarioDto>(email.Error);
+        var email = Email.Crear(command.Email);
+        if (email.EsFallo) return Resultado.Fallo<UsuarioDto>(email.Error);
 
-        if (await usuarios.GetByEmailAsync(email.Value!, cancellationToken) is not null)
+        if (await usuarios.ObtenerPorEmailAsync(email.Value!, cancellationToken) is not null)
         {
-            return Result.Failure<UsuarioDto>(UsuarioErrors.EmailDuplicado);
+            return Resultado.Fallo<UsuarioDto>(ErroresUsuario.EmailDuplicado);
         }
 
-        var usuario = Usuario.Registrar(nombre.Value!, email.Value!, passwordHasher.Hash(command.Password), DateTime.UtcNow);
-        if (usuario.IsFailure) return Result.Failure<UsuarioDto>(usuario.Error);
+        var usuario = Usuario.Registrar(nombre.Value!, email.Value!, hashContrasenaer.GenerarHash(command.Contrasena), DateTime.UtcNow);
+        if (usuario.EsFallo) return Resultado.Fallo<UsuarioDto>(usuario.Error);
 
-        usuarios.Add(usuario.Value!);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        usuarios.Agregar(usuario.Value!);
+        await unidadDeTrabajo.GuardarCambiosAsync(cancellationToken);
 
-        return Result.Success(new UsuarioDto(usuario.Value!.Id, usuario.Value.Nombre.Value, usuario.Value.Email.Value));
+        return Resultado.Exito(new UsuarioDto(usuario.Value!.Id, usuario.Value.Nombre.Value, usuario.Value.Email.Value));
     }
 }

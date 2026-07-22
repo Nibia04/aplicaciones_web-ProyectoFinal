@@ -1,26 +1,26 @@
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Application.Dtos;
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 using Presupuesto.Domain.Usuarios;
 
 namespace Presupuesto.Application.Usuarios.LoginUsuario;
 
 public sealed class LoginUsuarioHandler(
-    IUsuarioRepository usuarios,
-    IPasswordHasher passwordHasher,
-    ITokenService tokenService) : ICommandHandler<LoginUsuarioCommand, TokenDto>
+    IRepositorioUsuario usuarios,
+    IServicioHashContrasena servicioHashContrasena,
+    IServicioTokens servicioTokens) : IManejadorComando<LoginUsuarioCommand, TokenDto>
 {
-    public async Task<Result<TokenDto>> Handle(LoginUsuarioCommand command, CancellationToken cancellationToken = default)
+    public async Task<Resultado<TokenDto>> Handle(LoginUsuarioCommand command, CancellationToken cancellationToken = default)
     {
-        var email = Email.Create(command.Email);
-        if (email.IsFailure) return Result.Failure<TokenDto>(UsuarioErrors.CredencialesInvalidas);
+        var email = Email.Crear(command.Email);
+        if (email.EsFallo) return Resultado.Fallo<TokenDto>(ErroresUsuario.CredencialesInvalidas);
 
-        var usuario = await usuarios.GetByEmailAsync(email.Value!, cancellationToken);
-        if (usuario is null || !passwordHasher.Verify(command.Password, usuario.PasswordHash))
+        var usuario = await usuarios.ObtenerPorEmailAsync(email.Value!, cancellationToken);
+        if (usuario is null || !servicioHashContrasena.Verificar(command.Contrasena, usuario.HashContrasena))
         {
-            return Result.Failure<TokenDto>(UsuarioErrors.CredencialesInvalidas);
+            return Resultado.Fallo<TokenDto>(ErroresUsuario.CredencialesInvalidas);
         }
 
-        return Result.Success(new TokenDto(tokenService.CreateAccessToken(usuario)));
+        return Resultado.Exito(new TokenDto(servicioTokens.CrearTokenAcceso(usuario)));
     }
 }

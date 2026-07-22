@@ -1,4 +1,4 @@
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 
 namespace Presupuesto.Domain.Transacciones;
 
@@ -8,13 +8,13 @@ public sealed record Dinero
 
     public decimal Monto { get; }
 
-    public static Result<Dinero> Create(decimal monto)
+    public static Resultado<Dinero> Crear(decimal monto)
     {
         if (monto <= 0)
         {
-            return Result.Failure<Dinero>(TransaccionErrors.MontoInvalido);
+            return Resultado.Fallo<Dinero>(ErroresTransaccion.MontoInvalido);
         }
 
-        return Result.Success(new Dinero(monto));
+        return Resultado.Exito(new Dinero(monto));
     }
 }

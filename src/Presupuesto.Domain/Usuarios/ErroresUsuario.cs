@@ -1,8 +1,8 @@
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 
 namespace Presupuesto.Domain.Usuarios;
 
-public static class UsuarioErrors
+public static class ErroresUsuario
 {
     public static readonly Error NombreInvalido = new("usuario.nombre_invalido", "El nombre debe tener al menos 2 caracteres.");
     public static readonly Error EmailInvalido = new("usuario.email_invalido", "El email no tiene un formato valido.");

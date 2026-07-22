@@ -1,3 +1,3 @@
 namespace Presupuesto.Application.Usuarios.LoginUsuario;
 
-public sealed record LoginUsuarioCommand(string Email, string Password);
+public sealed record LoginUsuarioCommand(string Email, string Contrasena);

@@ -10,7 +10,7 @@ using Presupuesto.Application.Transacciones.ListarTransacciones;
 using Presupuesto.Application.Transacciones.ObtenerTransaccion;
 using Presupuesto.Application.Usuarios.LoginUsuario;
 using Presupuesto.Application.Usuarios.RegistrarUsuario;
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 using Presupuesto.Domain.Transacciones;
 using Presupuesto.Domain.Usuarios;
 using Presupuesto.Infrastructure;
@@ -47,8 +47,8 @@ app.MapPost("/auth/registro", async (
     RegistrarUsuarioHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(new RegistrarUsuarioCommand(request.Nombre, request.Email, request.Password), cancellationToken);
-    return result.ToHttpCreated("/auth/registro");
+    var Resultado = await handler.Handle(new RegistrarUsuarioCommand(request.Nombre, request.Email, request.Contrasena), cancellationToken);
+    return Resultado.ToHttpCreated("/auth/registro");
 });
 
 app.MapPost("/auth/login", async (
@@ -56,8 +56,8 @@ app.MapPost("/auth/login", async (
     LoginUsuarioHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(new LoginUsuarioCommand(request.Email, request.Password), cancellationToken);
-    return result.ToHttpResult();
+    var Resultado = await handler.Handle(new LoginUsuarioCommand(request.Email, request.Contrasena), cancellationToken);
+    return Resultado.ToHttpResult();
 });
 
 var transacciones = app.MapGroup("/transacciones").RequireAuthorization();
@@ -68,10 +68,10 @@ transacciones.MapPost("/", async (
     CrearTransaccionHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(
+    var Resultado = await handler.Handle(
         new CrearTransaccionCommand(user.GetUsuarioId(), request.Monto, request.Descripcion, request.Categoria, request.Fecha, request.Tipo),
         cancellationToken);
-    return result.ToHttpCreated("/transacciones");
+    return Resultado.ToHttpCreated("/transacciones");
 });
 
 transacciones.MapGet("/", async (
@@ -79,8 +79,8 @@ transacciones.MapGet("/", async (
     ListarTransaccionesHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(new ListarTransaccionesQuery(user.GetUsuarioId()), cancellationToken);
-    return result.ToHttpResult();
+    var Resultado = await handler.Handle(new ListarTransaccionesQuery(user.GetUsuarioId()), cancellationToken);
+    return Resultado.ToHttpResult();
 });
 
 transacciones.MapGet("/{id:guid}", async (
@@ -89,8 +89,8 @@ transacciones.MapGet("/{id:guid}", async (
     ObtenerTransaccionHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(new ObtenerTransaccionQuery(user.GetUsuarioId(), id), cancellationToken);
-    return result.ToHttpResult();
+    var Resultado = await handler.Handle(new ObtenerTransaccionQuery(user.GetUsuarioId(), id), cancellationToken);
+    return Resultado.ToHttpResult();
 });
 
 transacciones.MapPut("/{id:guid}", async (
@@ -100,10 +100,10 @@ transacciones.MapPut("/{id:guid}", async (
     ActualizarTransaccionHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(
+    var Resultado = await handler.Handle(
         new ActualizarTransaccionCommand(user.GetUsuarioId(), id, request.Monto, request.Descripcion, request.Categoria, request.Fecha, request.Tipo),
         cancellationToken);
-    return result.ToHttpResult();
+    return Resultado.ToHttpResult();
 });
 
 transacciones.MapDelete("/{id:guid}", async (
@@ -112,8 +112,8 @@ transacciones.MapDelete("/{id:guid}", async (
     EliminarTransaccionHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(new EliminarTransaccionCommand(user.GetUsuarioId(), id), cancellationToken);
-    return result.IsSuccess ? Results.NoContent() : result.ToHttpResult();
+    var Resultado = await handler.Handle(new EliminarTransaccionCommand(user.GetUsuarioId(), id), cancellationToken);
+    return Resultado.EsExitoso ? Results.NoContent() : Resultado.ToHttpResult();
 });
 
 app.MapGet("/presupuesto/resumen", async (
@@ -121,16 +121,16 @@ app.MapGet("/presupuesto/resumen", async (
     ObtenerResumenPresupuestoHandler handler,
     CancellationToken cancellationToken) =>
 {
-    var result = await handler.Handle(new ObtenerResumenPresupuestoQuery(user.GetUsuarioId()), cancellationToken);
-    return result.ToHttpResult();
+    var Resultado = await handler.Handle(new ObtenerResumenPresupuestoQuery(user.GetUsuarioId()), cancellationToken);
+    return Resultado.ToHttpResult();
 }).RequireAuthorization();
 
 app.Run();
 
 public partial class Program;
 
-public sealed record RegistrarUsuarioRequest(string Nombre, string Email, string Password);
-public sealed record LoginRequest(string Email, string Password);
+public sealed record RegistrarUsuarioRequest(string Nombre, string Email, string Contrasena);
+public sealed record LoginRequest(string Email, string Contrasena);
 public sealed record CrearTransaccionRequest(decimal Monto, string Descripcion, string Categoria, DateOnly Fecha, TipoTransaccion Tipo);
 public sealed record ActualizarTransaccionRequest(decimal? Monto, string? Descripcion, string? Categoria, DateOnly? Fecha, TipoTransaccion? Tipo);
 
@@ -145,39 +145,39 @@ internal static class ClaimsPrincipalExtensions
 
 internal static class ResultExtensions
 {
-    public static IResult ToHttpResult(this Result result)
+    public static IResult ToHttpResult(this Resultado Resultado)
     {
-        if (result.IsSuccess)
+        if (Resultado.EsExitoso)
         {
             return Results.Ok();
         }
 
-        return ToProblem(result.Error);
+        return ToProblem(Resultado.Error);
     }
 
-    public static IResult ToHttpResult<T>(this Result<T> result)
+    public static IResult ToHttpResult<T>(this Resultado<T> Resultado)
     {
-        if (result.IsSuccess)
+        if (Resultado.EsExitoso)
         {
-            return Results.Ok(result.Value);
+            return Results.Ok(Resultado.Value);
         }
 
-        return ToProblem(result.Error);
+        return ToProblem(Resultado.Error);
     }
 
-    public static IResult ToHttpCreated<T>(this Result<T> result, string location)
+    public static IResult ToHttpCreated<T>(this Resultado<T> Resultado, string location)
     {
-        if (result.IsSuccess)
+        if (Resultado.EsExitoso)
         {
-            return Results.Created(location, result.Value);
+            return Results.Created(location, Resultado.Value);
         }
 
-        return ToProblem(result.Error);
+        return ToProblem(Resultado.Error);
     }
 
     private static IResult ToProblem(Error error)
     {
-        var status = error.Code switch
+        var status = error.Codigo switch
         {
             "usuario.email_duplicado" => StatusCodes.Status409Conflict,
             "usuario.credenciales_invalidas" => StatusCodes.Status401Unauthorized,
@@ -187,7 +187,7 @@ internal static class ResultExtensions
         };
 
         return Results.Json(
-            new { error = new { codigo = error.Code, mensaje = error.Message } },
+            new { error = new { codigo = error.Codigo, mensaje = error.Mensaje } },
             statusCode: status);
     }
 }

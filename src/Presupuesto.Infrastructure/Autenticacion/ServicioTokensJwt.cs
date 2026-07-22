@@ -3,16 +3,16 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Domain.Usuarios;
 
-namespace Presupuesto.Infrastructure.Authentication;
+namespace Presupuesto.Infrastructure.Autenticacion;
 
-public sealed class JwtTokenService(IOptions<JwtOptions> options) : ITokenService
+public sealed class ServicioTokensJwt(IOptions<OpcionesJwt> options) : IServicioTokens
 {
-    private readonly JwtOptions _options = options.Value;
+    private readonly OpcionesJwt _options = options.Value;
 
-    public string CreateAccessToken(Usuario usuario)
+    public string CrearTokenAcceso(Usuario usuario)
     {
         var claims = new[]
         {

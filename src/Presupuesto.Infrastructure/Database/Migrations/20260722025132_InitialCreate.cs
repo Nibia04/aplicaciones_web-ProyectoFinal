@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -18,7 +18,7 @@ namespace Presupuesto.Infrastructure.Database.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    password_hash = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    hash_contrasena = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
                     creado_en_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

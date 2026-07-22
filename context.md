@@ -24,7 +24,7 @@ La entrega principal es 100% .NET.
 ## Funcionalidades mantenidas
 
 - Registrar usuarios.
-- Iniciar sesion con email y password.
+- Iniciar sesion con email y contrasena.
 - Generar JWT.
 - Crear transacciones de ingreso o gasto.
 - Listar transacciones del usuario autenticado.
@@ -42,7 +42,7 @@ Implementado en `src/Presupuesto.Domain`:
 
 - Entidades: `Usuario`, `Transaccion`.
 - Value Objects: `Email`, `Nombre`, `Dinero`, `Descripcion`, `Categoria`.
-- Eventos de dominio: `UsuarioRegistradoDomainEvent`, `TransaccionCreadaDomainEvent`.
+- Eventos de dominio: `UsuarioRegistradoEventoDominio`, `TransaccionCreadaEventoDominio`.
 - Encapsulamiento con setters privados y metodos semanticos.
 - Repositorios como contratos del dominio.
 
@@ -51,9 +51,9 @@ Implementado en `src/Presupuesto.Domain`:
 Implementado en `src/Presupuesto.Application`:
 
 - Separacion de capas: Domain, Application, Infrastructure, Api.
-- Commands y handlers para escrituras.
-- Queries y handlers para lecturas.
-- Abstracciones de aplicacion: `ICommandHandler`, `IQueryHandler`, `IUnitOfWork`, `IPasswordHasher`, `ITokenService`.
+- Comandos y manejadores para escrituras.
+- Consultas y manejadores para lecturas.
+- Abstracciones de aplicacion: `IManejadorComando`, `IManejadorConsulta`, `IUnidadDeTrabajo`, `IServicioHashContrasena`, `IServicioTokens`.
 
 ### Infraestructura y persistencia
 
@@ -119,16 +119,6 @@ dotnet tool run dotnet-ef migrations add NombreMigracion --project src/Presupues
 ## Plan por fases pendiente
 
 Estas fases parten del estado actual del proyecto. No se repiten fases ya completadas, salvo cuando sea necesario reforzar evidencia para la rubrica.
-
-### Fase 1: Normalizar nombres en espanol y consistencia de carpetas
-
-Objetivo: que el proyecto se lea como una entrega clara para el profesor y el grupo.
-
-- Priorizar nombres en espanol en dominio y aplicacion.
-- Revisar si conviene renombrar clases como `UsuarioErrors`, `TransaccionErrors`, `PasswordHasher`, `JwtTokenService` o `DependencyInjection`.
-- Mantener nombres tecnicos en ingles solo cuando sean convenciones comunes de .NET o del framework.
-- Confirmar que los casos de uso esten faciles de ubicar por feature: comandos, consultas y handlers.
-- Ejecutar `dotnet build` y `dotnet test` despues de cualquier renombre.
 
 ### Fase 2: Reforzar evidencia DDD del dominio
 

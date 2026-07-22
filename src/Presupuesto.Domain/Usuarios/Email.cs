@@ -1,4 +1,4 @@
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 
 namespace Presupuesto.Domain.Usuarios;
 
@@ -8,14 +8,14 @@ public sealed record Email
 
     public string Value { get; }
 
-    public static Result<Email> Create(string value)
+    public static Resultado<Email> Crear(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || !value.Contains('@'))
         {
-            return Result.Failure<Email>(UsuarioErrors.EmailInvalido);
+            return Resultado.Fallo<Email>(ErroresUsuario.EmailInvalido);
         }
 
-        return Result.Success(new Email(value.Trim().ToLowerInvariant()));
+        return Resultado.Exito(new Email(value.Trim().ToLowerInvariant()));
     }
 
     public override string ToString() => Value;

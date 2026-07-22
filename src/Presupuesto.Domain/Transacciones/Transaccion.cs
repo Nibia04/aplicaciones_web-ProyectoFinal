@@ -1,8 +1,8 @@
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 
 namespace Presupuesto.Domain.Transacciones;
 
-public sealed class Transaccion : Entity
+public sealed class Transaccion : Entidad
 {
     private Transaccion() { }
 
@@ -32,7 +32,7 @@ public sealed class Transaccion : Entity
     public TipoTransaccion Tipo { get; private set; }
     public DateTime CreadoEnUtc { get; private set; }
 
-    public static Result<Transaccion> Crear(
+    public static Resultado<Transaccion> Crear(
         Guid usuarioId,
         Dinero monto,
         Descripcion descripcion,
@@ -42,8 +42,8 @@ public sealed class Transaccion : Entity
         DateTime utcNow)
     {
         var transaccion = new Transaccion(usuarioId, monto, descripcion, categoria, fecha, tipo, utcNow);
-        transaccion.RaiseDomainEvent(new TransaccionCreadaDomainEvent(transaccion.Id, usuarioId, utcNow));
-        return Result.Success(transaccion);
+        transaccion.RegistrarEventoDominio(new TransaccionCreadaEventoDominio(transaccion.Id, usuarioId, utcNow));
+        return Resultado.Exito(transaccion);
     }
 
     public void Actualizar(Dinero? monto, Descripcion? descripcion, Categoria? categoria, DateOnly? fecha, TipoTransaccion? tipo)

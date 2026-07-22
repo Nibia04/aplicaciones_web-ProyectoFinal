@@ -1,31 +1,31 @@
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Domain.Transacciones;
 using Presupuesto.Domain.Usuarios;
 
 namespace Presupuesto.Tests.Application;
 
-internal sealed class UsuarioRepositoryFake : IUsuarioRepository
+internal sealed class RepositorioUsuarioFake : IRepositorioUsuario
 {
     private readonly List<Usuario> _usuarios = [];
 
-    public Task<Usuario?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
+    public Task<Usuario?> ObtenerPorEmailAsync(Email email, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(_usuarios.FirstOrDefault(usuario => usuario.Email.Value == email.Value));
     }
 
-    public Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<Usuario?> ObtenerPorIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(_usuarios.FirstOrDefault(usuario => usuario.Id == id));
     }
 
-    public void Add(Usuario usuario) => _usuarios.Add(usuario);
+    public void Agregar(Usuario usuario) => _usuarios.Add(usuario);
 }
 
-internal sealed class TransaccionRepositoryFake : ITransaccionRepository
+internal sealed class RepositorioTransaccionFake : IRepositorioTransaccion
 {
     private readonly List<Transaccion> _transacciones = [];
 
-    public Task<IReadOnlyList<Transaccion>> ListByUsuarioAsync(Guid usuarioId, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<Transaccion>> ListarPorUsuarioAsync(Guid usuarioId, CancellationToken cancellationToken = default)
     {
         return Task.FromResult<IReadOnlyList<Transaccion>>(
             _transacciones
@@ -35,7 +35,7 @@ internal sealed class TransaccionRepositoryFake : ITransaccionRepository
                 .ToList());
     }
 
-    public Task<IReadOnlyList<Transaccion>> ListByUsuarioFechaAscAsync(Guid usuarioId, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<Transaccion>> ListarPorUsuarioFechaAscAsync(Guid usuarioId, CancellationToken cancellationToken = default)
     {
         return Task.FromResult<IReadOnlyList<Transaccion>>(
             _transacciones
@@ -44,34 +44,34 @@ internal sealed class TransaccionRepositoryFake : ITransaccionRepository
                 .ToList());
     }
 
-    public Task<Transaccion?> GetByIdAndUsuarioAsync(Guid id, Guid usuarioId, CancellationToken cancellationToken = default)
+    public Task<Transaccion?> ObtenerPorIdYUsuarioAsync(Guid id, Guid usuarioId, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(_transacciones.FirstOrDefault(t => t.Id == id && t.UsuarioId == usuarioId));
     }
 
-    public void Add(Transaccion transaccion) => _transacciones.Add(transaccion);
+    public void Agregar(Transaccion transaccion) => _transacciones.Add(transaccion);
 
-    public void Remove(Transaccion transaccion) => _transacciones.Remove(transaccion);
+    public void Remover(Transaccion transaccion) => _transacciones.Remove(transaccion);
 }
 
-internal sealed class UnitOfWorkFake : IUnitOfWork
+internal sealed class UnidadDeTrabajoFake : IUnidadDeTrabajo
 {
-    public int Saves { get; private set; }
+    public int Guardados { get; private set; }
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public Task<int> GuardarCambiosAsync(CancellationToken cancellationToken = default)
     {
-        Saves++;
-        return Task.FromResult(Saves);
+        Guardados++;
+        return Task.FromResult(Guardados);
     }
 }
 
-internal sealed class PasswordHasherFake : IPasswordHasher
+internal sealed class ServicioHashContrasenaFake : IServicioHashContrasena
 {
-    public string Hash(string password) => $"hashed:{password}";
-    public bool Verify(string password, string passwordHash) => passwordHash == Hash(password);
+    public string GenerarHash(string contrasena) => $"hashed:{contrasena}";
+    public bool Verificar(string contrasena, string hashContrasena) => hashContrasena == GenerarHash(contrasena);
 }
 
-internal sealed class TokenServiceFake : ITokenService
+internal sealed class ServicioTokensFake : IServicioTokens
 {
-    public string CreateAccessToken(Usuario usuario) => $"token:{usuario.Id}";
+    public string CrearTokenAcceso(Usuario usuario) => $"token:{usuario.Id}";
 }

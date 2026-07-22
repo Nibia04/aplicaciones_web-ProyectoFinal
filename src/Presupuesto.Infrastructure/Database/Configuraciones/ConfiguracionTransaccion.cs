@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Presupuesto.Domain.Transacciones;
 
-namespace Presupuesto.Infrastructure.Database.Configurations;
+namespace Presupuesto.Infrastructure.Database.Configuraciones;
 
-public sealed class TransaccionConfiguration : IEntityTypeConfiguration<Transaccion>
+public sealed class ConfiguracionTransaccion : IEntityTypeConfiguration<Transaccion>
 {
     public void Configure(EntityTypeBuilder<Transaccion> builder)
     {
@@ -54,6 +54,6 @@ public sealed class TransaccionConfiguration : IEntityTypeConfiguration<Transacc
             .IsRequired();
 
         builder.HasIndex(transaccion => new { transaccion.UsuarioId, transaccion.Fecha });
-        builder.Ignore(transaccion => transaccion.DomainEvents);
+        builder.Ignore(transaccion => transaccion.EventosDominio);
     }
 }

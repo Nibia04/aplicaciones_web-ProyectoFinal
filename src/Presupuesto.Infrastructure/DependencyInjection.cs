@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Domain.Transacciones;
 using Presupuesto.Domain.Usuarios;
-using Presupuesto.Infrastructure.Authentication;
+using Presupuesto.Infrastructure.Autenticacion;
 using Presupuesto.Infrastructure.Database;
-using Presupuesto.Infrastructure.Repositories;
+using Presupuesto.Infrastructure.Repositorios;
 
 namespace Presupuesto.Infrastructure;
 
@@ -17,19 +17,19 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
-        var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+        services.Configure<OpcionesJwt>(configuration.GetSection(OpcionesJwt.SectionName));
+        var jwtOptions = configuration.GetSection(OpcionesJwt.SectionName).Get<OpcionesJwt>() ?? new OpcionesJwt();
 
         services.AddDbContext<PresupuestoDbContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("presupuesto"));
         });
 
-        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-        services.AddScoped<ITransaccionRepository, TransaccionRepository>();
-        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<PresupuestoDbContext>());
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
-        services.AddScoped<ITokenService, JwtTokenService>();
+        services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
+        services.AddScoped<IRepositorioTransaccion, RepositorioTransaccion>();
+        services.AddScoped<IUnidadDeTrabajo>(provider => provider.GetRequiredService<PresupuestoDbContext>());
+        services.AddScoped<IServicioHashContrasena, ServicioHashContrasena>();
+        services.AddScoped<IServicioTokens, ServicioTokensJwt>();
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

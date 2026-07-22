@@ -36,26 +36,26 @@ AppHost -> Api + PostgreSQL
 
 - Entidades: `Usuario`, `Transaccion`.
 - Value Objects: `Email`, `Nombre`, `Dinero`, `Descripcion`, `Categoria`.
-- Eventos de dominio: `UsuarioRegistradoDomainEvent`, `TransaccionCreadaDomainEvent`.
+- Eventos de dominio: `UsuarioRegistradoEventoDominio`, `TransaccionCreadaEventoDominio`.
 - Encapsulamiento: setters privados, metodos semanticos y colecciones de solo lectura.
-- Contratos de repositorio: `IUsuarioRepository`, `ITransaccionRepository`.
+- Contratos de repositorio: `IRepositorioUsuario`, `IRepositorioTransaccion`.
 
 ### Application
 
 `src/Presupuesto.Application` contiene CQRS:
 
-- Commands:
+- Comandos:
   - `RegistrarUsuarioCommand`
   - `LoginUsuarioCommand`
   - `CrearTransaccionCommand`
   - `ActualizarTransaccionCommand`
   - `EliminarTransaccionCommand`
-- Queries:
+- Consultas:
   - `ListarTransaccionesQuery`
   - `ObtenerTransaccionQuery`
   - `ObtenerResumenPresupuestoQuery`
-- Handlers por caso de uso.
-- Abstracciones: `ICommandHandler`, `IQueryHandler`, `IUnitOfWork`, `IPasswordHasher`, `ITokenService`.
+- Manejadores por caso de uso.
+- Abstracciones: `IManejadorComando`, `IManejadorConsulta`, `IUnidadDeTrabajo`, `IServicioHashContrasena`, `IServicioTokens`.
 
 ### Infrastructure
 
@@ -65,7 +65,7 @@ AppHost -> Api + PostgreSQL
 - Configuraciones EF Core.
 - Repositorios concretos.
 - Migraciones EF Core.
-- Hash de passwords.
+- Hash de contrasenas.
 - JWT.
 
 ### Api

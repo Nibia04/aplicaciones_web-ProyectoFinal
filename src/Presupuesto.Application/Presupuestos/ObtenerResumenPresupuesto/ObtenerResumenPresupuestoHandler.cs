@@ -1,16 +1,16 @@
-using Presupuesto.Application.Abstractions;
+using Presupuesto.Application.Abstracciones;
 using Presupuesto.Application.Dtos;
-using Presupuesto.Domain.Abstractions;
+using Presupuesto.Domain.Abstracciones;
 using Presupuesto.Domain.Transacciones;
 
 namespace Presupuesto.Application.Presupuestos.ObtenerResumenPresupuesto;
 
-public sealed class ObtenerResumenPresupuestoHandler(ITransaccionRepository transacciones)
-    : IQueryHandler<ObtenerResumenPresupuestoQuery, PresupuestoDto>
+public sealed class ObtenerResumenPresupuestoHandler(IRepositorioTransaccion transacciones)
+    : IManejadorConsulta<ObtenerResumenPresupuestoQuery, PresupuestoDto>
 {
-    public async Task<Result<PresupuestoDto>> Handle(ObtenerResumenPresupuestoQuery query, CancellationToken cancellationToken = default)
+    public async Task<Resultado<PresupuestoDto>> Handle(ObtenerResumenPresupuestoQuery query, CancellationToken cancellationToken = default)
     {
-        var lista = await transacciones.ListByUsuarioFechaAscAsync(query.UsuarioId, cancellationToken);
+        var lista = await transacciones.ListarPorUsuarioFechaAscAsync(query.UsuarioId, cancellationToken);
         var totalIngresos = lista.Where(t => t.Tipo == TipoTransaccion.Ingreso).Sum(t => t.Monto.Monto);
         var totalGastos = lista.Where(t => t.Tipo == TipoTransaccion.Gasto).Sum(t => t.Monto.Monto);
 
@@ -24,6 +24,6 @@ public sealed class ObtenerResumenPresupuestoHandler(ITransaccionRepository tran
             })
             .ToList();
 
-        return Result.Success(new PresupuestoDto(totalIngresos - totalGastos, totalIngresos, totalGastos, resumenDiario));
+        return Resultado.Exito(new PresupuestoDto(totalIngresos - totalGastos, totalIngresos, totalGastos, resumenDiario));
     }
 }
