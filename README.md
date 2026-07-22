@@ -40,6 +40,17 @@ app/
       transaccion_repository_sqlalchemy.py
     security.py
 tests/
+  api/
+    conftest.py
+    test_auth.py
+    test_transacciones.py
+    test_presupuesto.py
+  application/
+    fakes.py
+    test_auth_use_cases.py
+    test_transaccion_use_cases.py
+  domain/
+    test_transaccion.py
   test_api.py
 requirements.txt
 ```
@@ -94,7 +105,12 @@ Contiene detalles tecnicos: base de datos, modelos ORM, seguridad, JWT, configur
 
 ### `tests`
 
-Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fases se agregaran pruebas por capa.
+Contiene pruebas automatizadas por capa:
+
+- `tests/domain`: pruebas de entidades y conceptos del dominio.
+- `tests/application`: pruebas unitarias de casos de uso con repositorios falsos.
+- `tests/api`: pruebas de endpoints, autenticacion, validaciones y respuestas HTTP.
+- `tests/test_api.py`: prueba de flujo general mantenida como compatibilidad.
 
 ## Estado de mejora arquitectonica
 
@@ -103,7 +119,8 @@ Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fa
 - Fase 3 completada: la logica principal de rutas fue movida a casos de uso en `app/application/use_cases`.
 - Fase 4 completada: casos de uso desacoplados de SQLAlchemy mediante puertos e implementaciones de repositorio.
 - Fase 5 completada: API mejorada con dependencias reutilizables y errores/respuestas estandarizados.
-- Siguiente paso: ampliar testing por capas.
+- Fase 6 completada: testing ampliado por capas con pruebas de dominio, aplicacion y API.
+- Siguiente paso: mejorar seguridad y configuracion.
 
 ## Ejecutar
 
@@ -121,7 +138,7 @@ La base SQLite se crea automaticamente en `presupuesto.db`.
 .\.venv\Scripts\python.exe -m pytest
 ```
 
-Los tests usan una base SQLite temporal llamada `test_presupuesto.db`.
+Las pruebas de API usan bases SQLite temporales. Las pruebas de aplicacion usan repositorios falsos en memoria.
 
 ## Flujo rapido en Postman
 

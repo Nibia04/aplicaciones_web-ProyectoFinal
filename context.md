@@ -298,142 +298,11 @@ tests/
 # Planificacion por fases
 
 
-## Fase 3: Crear casos de uso en Application
-
-Objetivo: mover la logica de negocio y aplicacion fuera de las rutas.
-
-Estado: completada.
-
-Acciones:
-
-- Crear una carpeta de casos de uso:
-
-```text
-app/application/use_cases/
-```
-
-- Crear casos de uso como:
-
-```text
-registrar_usuario.py
-login_usuario.py
-crear_transaccion.py
-listar_transacciones.py
-obtener_transaccion.py
-actualizar_transaccion.py
-eliminar_transaccion.py
-obtener_resumen_presupuesto.py
-```
-
-- Hacer que las rutas llamen a estos casos de uso en lugar de ejecutar toda la logica directamente.
-
-- Crear errores de aplicacion en:
-
-```text
-app/application/errors.py
-```
-
-- Dejar la capa API encargada de traducir errores de aplicacion a respuestas HTTP.
-
-Resultado esperado:
-
-- La capa `application` contendra claramente los casos de uso del sistema.
-
-## Fase 4: Crear repositorios e interfaces
-
-Objetivo: desacoplar los casos de uso de SQLAlchemy.
-
-Estado: completada.
-
-Acciones:
-
-- Crear contratos o interfaces para repositorios:
-
-```text
-app/application/ports.py
-```
-
-o:
-
-```text
-app/domain/repositories.py
-```
-
-- Definir contratos como:
-
-```text
-UsuarioRepository
-TransaccionRepository
-PasswordHasher
-TokenService
-```
-
-- Crear implementaciones concretas con SQLAlchemy en infraestructura:
-
-```text
-app/infrastructure/repositories/
-  usuario_repository_sqlalchemy.py
-  transaccion_repository_sqlalchemy.py
-```
-
-- Actualizar los casos de uso para recibir repositorios y servicios por interfaz.
-- Mantener SQLAlchemy solamente en infraestructura.
-- Mantener la API como punto de composicion que crea los repositorios concretos.
-
-Resultado esperado:
-
-- Application dependera de interfaces.
-- Infrastructure tendra las implementaciones concretas.
-- Sera mas facil probar casos de uso con repositorios falsos o en memoria.
-
-## Fase 5: Mejorar la API
-
-Objetivo: dejar la API como una capa delgada.
-
-Estado: completada.
-
-Acciones:
-
-- Mantener los endpoints existentes.
-- Hacer que cada endpoint:
-  - reciba el request,
-  - valide entrada mediante schemas,
-  - llame al caso de uso correspondiente,
-  - transforme errores en respuestas HTTP,
-  - devuelva la respuesta.
-
-- Evitar consultas SQLAlchemy directamente dentro de rutas.
-- Estandarizar errores y respuestas.
-- Centralizar la traduccion de errores en:
-
-```text
-app/api/error_handlers.py
-```
-
-- Centralizar la creacion de repositorios y servicios en:
-
-```text
-app/api/dependencies.py
-```
-
-- Usar un formato consistente para errores:
-
-```json
-{
-  "error": {
-    "codigo": "codigo_del_error",
-    "mensaje": "Descripcion del error"
-  }
-}
-```
-
-Resultado esperado:
-
-- La API sera mas limpia, facil de leer y alineada con arquitectura limpia.
-
 ## Fase 6: Mejorar testing
 
 Objetivo: cubrir las capas principales del proyecto.
+
+Estado: completada.
 
 Acciones:
 
@@ -449,14 +318,16 @@ tests/domain/
 
 ```text
 tests/application/
-  test_crear_transaccion.py
-  test_obtener_resumen_presupuesto.py
+  fakes.py
+  test_auth_use_cases.py
+  test_transaccion_use_cases.py
 ```
 
 - Crear pruebas de API por modulo:
 
 ```text
 tests/api/
+  conftest.py
   test_auth.py
   test_transacciones.py
   test_presupuesto.py
@@ -478,6 +349,8 @@ tests/api/
 Resultado esperado:
 
 - El proyecto tendra testing por capas y no solo una prueba de flujo completo.
+- La suite actual valida dominio, casos de uso, endpoints y errores HTTP.
+- Resultado verificado: `23 passed`.
 
 ## Fase 7: Mejorar seguridad y configuracion
 
