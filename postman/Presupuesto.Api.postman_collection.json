@@ -1,0 +1,144 @@
+{
+  "info": {
+    "_postman_id": "356a79dd-4d36-40c2-a3e5-4b418eb8dd33",
+    "name": "Presupuesto API - Flujo completo",
+    "description": "Ejecutar en orden. Genera usuario unico y guarda JWT e ID automaticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5140" },
+    { "key": "email", "value": "" },
+    { "key": "password", "value": "secreto123" },
+    { "key": "token", "value": "" },
+    { "key": "transaccionId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 - Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/health" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Health responde 200', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "02 - Endpoint protegido sin token",
+      "request": { "method": "GET", "url": "{{baseUrl}}/transacciones" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Rechaza acceso sin token', () => pm.response.to.have.status(401));"] } }]
+    },
+    {
+      "name": "03 - Registrar usuario",
+      "event": [
+        { "listen": "prerequest", "script": { "exec": ["pm.collectionVariables.set('email', `postman-${Date.now()}@example.com`);"] } },
+        { "listen": "test", "script": { "exec": [
+          "pm.test('Usuario creado', () => pm.response.to.have.status(201));",
+          "pm.test('Devuelve usuario valido', () => { const b = pm.response.json(); pm.expect(b.id).to.be.a('string').and.not.empty; pm.expect(b.email).to.eql(pm.collectionVariables.get('email')); });"
+        ] } }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Ana Postman\",\n  \"email\": \"{{email}}\",\n  \"contrasena\": \"{{password}}\"\n}" },
+        "url": "{{baseUrl}}/auth/registro"
+      }
+    },
+    {
+      "name": "04 - Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"contrasena\": \"{{password}}\"\n}" },
+        "url": "{{baseUrl}}/auth/login"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Login exitoso', () => pm.response.to.have.status(200));",
+        "const b = pm.response.json(); pm.expect(b.tokenAcceso).to.be.a('string').and.not.empty; pm.collectionVariables.set('token', b.tokenAcceso);"
+      ] } }]
+    },
+    {
+      "name": "05 - Crear ingreso",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"monto\": 100,\n  \"descripcion\": \"Pago recibido\",\n  \"categoria\": \"Trabajo\",\n  \"fecha\": \"2026-07-21\",\n  \"tipo\": \"Ingreso\"\n}" },
+        "url": "{{baseUrl}}/transacciones"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Ingreso creado', () => pm.response.to.have.status(201));"] } }]
+    },
+    {
+      "name": "06 - Crear gasto",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"monto\": 25.5,\n  \"descripcion\": \"Almuerzo\",\n  \"categoria\": \"Comida\",\n  \"fecha\": \"2026-07-21\",\n  \"tipo\": \"Gasto\"\n}" },
+        "url": "{{baseUrl}}/transacciones"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Gasto creado', () => pm.response.to.have.status(201));",
+        "const b = pm.response.json(); pm.expect(b.id).to.be.a('string').and.not.empty; pm.collectionVariables.set('transaccionId', b.id);"
+      ] } }]
+    },
+    {
+      "name": "07 - Listar transacciones",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "GET", "url": "{{baseUrl}}/transacciones"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Listado responde 200', () => pm.response.to.have.status(200));",
+        "pm.test('Contiene ingreso y gasto', () => pm.expect(pm.response.json()).to.have.lengthOf(2));"
+      ] } }]
+    },
+    {
+      "name": "08 - Obtener gasto por ID",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "GET", "url": "{{baseUrl}}/transacciones/{{transaccionId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Transaccion encontrada', () => pm.response.to.have.status(200));",
+        "pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('transaccionId'));"
+      ] } }]
+    },
+    {
+      "name": "09 - Actualizar gasto",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"monto\": 30,\n  \"descripcion\": \"Almuerzo actualizado\"\n}" },
+        "url": "{{baseUrl}}/transacciones/{{transaccionId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Transaccion actualizada', () => pm.response.to.have.status(200));",
+        "const b = pm.response.json(); pm.expect(b.monto).to.eql(30); pm.expect(b.descripcion).to.eql('Almuerzo actualizado');"
+      ] } }]
+    },
+    {
+      "name": "10 - Resumen de presupuesto",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "GET", "url": "{{baseUrl}}/presupuesto/resumen"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Resumen responde 200', () => pm.response.to.have.status(200));",
+        "pm.test('Totales correctos', () => { const b = pm.response.json(); pm.expect(b.totalIngresos).to.eql(100); pm.expect(b.totalGastos).to.eql(30); pm.expect(b.saldoActual).to.eql(70); });"
+      ] } }]
+    },
+    {
+      "name": "11 - Eliminar gasto",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "DELETE", "url": "{{baseUrl}}/transacciones/{{transaccionId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Transaccion eliminada', () => pm.response.to.have.status(204));"] } }]
+    },
+    {
+      "name": "12 - Confirmar eliminacion",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "GET", "url": "{{baseUrl}}/transacciones/{{transaccionId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('La transaccion ya no existe', () => pm.response.to.have.status(404));"] } }]
+    }
+  ]
+}

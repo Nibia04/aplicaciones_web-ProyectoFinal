@@ -22,13 +22,14 @@ La entrega principal es 100% .NET.
 ## Arquitectura
 
 ```text
-Api -> Application -> Domain
-       |
-       v
- Infrastructure
+Api ------------> Application ------------> Domain
+ |                     ^                       ^
+ +-> Infrastructure --+-----------------------+
 
 AppHost -> Api + PostgreSQL
 ```
+
+La API es el punto de composicion. Infrastructure implementa los contratos definidos por Application y Domain; el nucleo nunca referencia las capas externas.
 
 ### Domain
 
@@ -36,7 +37,7 @@ AppHost -> Api + PostgreSQL
 
 - Entidades: `Usuario`, `Transaccion`.
 - Value Objects: `Email`, `Nombre`, `Dinero`, `Descripcion`, `Categoria`.
-- Eventos de dominio: `UsuarioRegistradoEventoDominio`, `TransaccionCreadaEventoDominio`.
+- Eventos de dominio: `UsuarioRegistradoEventoDominio`, `TransaccionCreadaEventoDominio`, despachados despues de persistir y atendidos por manejadores desacoplados.
 - Encapsulamiento: setters privados, metodos semanticos y colecciones de solo lectura.
 - Contratos de repositorio: `IRepositorioUsuario`, `IRepositorioTransaccion`.
 
@@ -116,7 +117,7 @@ Incluye:
 - Pruebas de handlers CQRS.
 - Prueba E2E con `Aspire.Hosting.Testing`.
 
-Nota: si Docker no esta corriendo, la prueba E2E Aspire no levanta contenedores y retorna sin ejecutar el flujo externo. Con Docker activo, levanta el entorno Aspire programaticamente.
+Docker debe estar activo: la prueba E2E levanta el AppHost programaticamente, espera que la API este saludable y falla si la infraestructura real no puede ejecutarse. El flujo valida registro, login, autorizacion, CRUD de transacciones y resumen.
 
 ## Consumo HTTP
 
@@ -125,3 +126,13 @@ Archivo incluido:
 ```text
 src/Presupuesto.Api/Presupuesto.Api.http
 ```
+
+Ejecutar las peticiones en el orden del archivo. Los scripts de respuesta guardan automaticamente el JWT y el identificador de la transaccion para las peticiones siguientes.
+
+Tambien se incluye una coleccion automatizada de Postman:
+
+```text
+postman/Presupuesto.Api.postman_collection.json
+```
+
+Importarla y ejecutarla con Collection Runner. La coleccion genera un usuario unico, conserva el JWT y el ID de la transaccion, y valida automaticamente todo el flujo.

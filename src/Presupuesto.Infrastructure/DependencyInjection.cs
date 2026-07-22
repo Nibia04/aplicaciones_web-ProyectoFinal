@@ -9,6 +9,7 @@ using Presupuesto.Domain.Transacciones;
 using Presupuesto.Domain.Usuarios;
 using Presupuesto.Infrastructure.Autenticacion;
 using Presupuesto.Infrastructure.Database;
+using Presupuesto.Infrastructure.Eventos;
 using Presupuesto.Infrastructure.Repositorios;
 
 namespace Presupuesto.Infrastructure;
@@ -30,6 +31,9 @@ public static class DependencyInjection
         services.AddScoped<IUnidadDeTrabajo>(provider => provider.GetRequiredService<PresupuestoDbContext>());
         services.AddScoped<IServicioHashContrasena, ServicioHashContrasena>();
         services.AddScoped<IServicioTokens, ServicioTokensJwt>();
+        services.AddScoped<IDespachadorEventosDominio, DespachadorEventosDominio>();
+        services.AddScoped<IManejadorEventoDominio, UsuarioRegistradoManejador>();
+        services.AddScoped<IManejadorEventoDominio, TransaccionCreadaManejador>();
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
