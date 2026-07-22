@@ -41,17 +41,29 @@ public sealed class Transaccion : Entidad
         TipoTransaccion tipo,
         DateTime utcNow)
     {
+        if (!Enum.IsDefined(tipo))
+        {
+            return Resultado.Fallo<Transaccion>(ErroresTransaccion.TipoInvalido);
+        }
+
         var transaccion = new Transaccion(usuarioId, monto, descripcion, categoria, fecha, tipo, utcNow);
         transaccion.RegistrarEventoDominio(new TransaccionCreadaEventoDominio(transaccion.Id, usuarioId, utcNow));
         return Resultado.Exito(transaccion);
     }
 
-    public void Actualizar(Dinero? monto, Descripcion? descripcion, Categoria? categoria, DateOnly? fecha, TipoTransaccion? tipo)
+    public Resultado Actualizar(Dinero? monto, Descripcion? descripcion, Categoria? categoria, DateOnly? fecha, TipoTransaccion? tipo)
     {
+        if (tipo is not null && !Enum.IsDefined(tipo.Value))
+        {
+            return Resultado.Fallo(ErroresTransaccion.TipoInvalido);
+        }
+
         if (monto is not null) Monto = monto;
         if (descripcion is not null) Descripcion = descripcion;
         if (categoria is not null) Categoria = categoria;
         if (fecha is not null) Fecha = fecha.Value;
         if (tipo is not null) Tipo = tipo.Value;
+
+        return Resultado.Exito();
     }
 }

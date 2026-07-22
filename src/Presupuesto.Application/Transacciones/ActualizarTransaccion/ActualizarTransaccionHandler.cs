@@ -38,7 +38,9 @@ public sealed class ActualizarTransaccionHandler(
             categoria = categoriaResult.Value;
         }
 
-        transaccion.Actualizar(monto, descripcion, categoria, command.Fecha, command.Tipo);
+        var actualizacion = transaccion.Actualizar(monto, descripcion, categoria, command.Fecha, command.Tipo);
+        if (actualizacion.EsFallo) return Resultado.Fallo<TransaccionDto>(actualizacion.Error);
+
         await unidadDeTrabajo.GuardarCambiosAsync(cancellationToken);
 
         return Resultado.Exito(TransaccionDto.From(transaccion));

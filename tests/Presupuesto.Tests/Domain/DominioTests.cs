@@ -47,4 +47,28 @@ public sealed class DominioTests
         Assert.True(Resultado.EsFallo);
         Assert.Equal("transaccion.monto_invalido", Resultado.Error.Codigo);
     }
+
+    [Fact]
+    public void Contrasena_ExigeMinimoOchoCaracteres()
+    {
+        Assert.Equal("usuario.contrasena_invalida", Contrasena.Crear("corta").Error.Codigo);
+        Assert.True(Contrasena.Crear("secreto123").EsExitoso);
+    }
+
+    [Fact]
+    public void TipoTransaccion_RechazaValorInvalidoAlCrearYActualizar()
+    {
+        var monto = Dinero.Crear(25).Value!;
+        var descripcion = Descripcion.Crear("Almuerzo").Value!;
+        var categoria = Categoria.Crear("Comida").Value!;
+        var tipoInvalido = (TipoTransaccion)99;
+
+        var creacion = Transaccion.Crear(Guid.NewGuid(), monto, descripcion, categoria, DateOnly.FromDateTime(DateTime.Today), tipoInvalido, DateTime.UtcNow);
+        var transaccion = Transaccion.Crear(Guid.NewGuid(), monto, descripcion, categoria, DateOnly.FromDateTime(DateTime.Today), TipoTransaccion.Gasto, DateTime.UtcNow).Value!;
+        var actualizacion = transaccion.Actualizar(null, null, null, null, tipoInvalido);
+
+        Assert.Equal("transaccion.tipo_invalido", creacion.Error.Codigo);
+        Assert.Equal("transaccion.tipo_invalido", actualizacion.Error.Codigo);
+        Assert.Equal(TipoTransaccion.Gasto, transaccion.Tipo);
+    }
 }

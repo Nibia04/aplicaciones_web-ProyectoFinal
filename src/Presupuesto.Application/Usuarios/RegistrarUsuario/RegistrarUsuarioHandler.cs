@@ -18,12 +18,15 @@ public sealed class RegistrarUsuarioHandler(
         var email = Email.Crear(command.Email);
         if (email.EsFallo) return Resultado.Fallo<UsuarioDto>(email.Error);
 
+        var contrasena = Contrasena.Crear(command.Contrasena);
+        if (contrasena.EsFallo) return Resultado.Fallo<UsuarioDto>(contrasena.Error);
+
         if (await usuarios.ObtenerPorEmailAsync(email.Value!, cancellationToken) is not null)
         {
             return Resultado.Fallo<UsuarioDto>(ErroresUsuario.EmailDuplicado);
         }
 
-        var usuario = Usuario.Registrar(nombre.Value!, email.Value!, hashContrasenaer.GenerarHash(command.Contrasena), DateTime.UtcNow);
+        var usuario = Usuario.Registrar(nombre.Value!, email.Value!, hashContrasenaer.GenerarHash(contrasena.Value!.Value), DateTime.UtcNow);
         if (usuario.EsFallo) return Resultado.Fallo<UsuarioDto>(usuario.Error);
 
         usuarios.Agregar(usuario.Value!);

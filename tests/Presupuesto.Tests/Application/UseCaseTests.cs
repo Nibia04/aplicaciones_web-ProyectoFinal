@@ -43,6 +43,18 @@ public sealed class UseCaseTests
     }
 
     [Fact]
+    public async Task RegistrarUsuario_RechazaContrasenaCortaSinGuardar()
+    {
+        var unidadDeTrabajo = new UnidadDeTrabajoFake();
+        var handler = new RegistrarUsuarioHandler(new RepositorioUsuarioFake(), new ServicioHashContrasenaFake(), unidadDeTrabajo);
+
+        var resultado = await handler.Handle(new RegistrarUsuarioCommand("Ana", "ana@example.com", "corta"));
+
+        Assert.Equal("usuario.contrasena_invalida", resultado.Error.Codigo);
+        Assert.Equal(0, unidadDeTrabajo.Guardados);
+    }
+
+    [Fact]
     public async Task CrearTransaccionYResumen_FlujoCorrecto()
     {
         var usuarioId = Guid.NewGuid();
