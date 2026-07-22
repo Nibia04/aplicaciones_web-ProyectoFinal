@@ -1,0 +1,64 @@
+@host = http://localhost:5140
+@token = reemplazar_con_access_token
+@transaccionId = reemplazar_con_id
+
+### Health
+GET {{host}}/health
+
+### Registrar usuario
+POST {{host}}/auth/registro
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "email": "ana@example.com",
+  "password": "secreto123"
+}
+
+### Login
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "ana@example.com",
+  "password": "secreto123"
+}
+
+### Crear transaccion
+POST {{host}}/transacciones
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "monto": 25.50,
+  "descripcion": "Almuerzo",
+  "categoria": "Comida",
+  "fecha": "2026-07-14",
+  "tipo": "Gasto"
+}
+
+### Listar transacciones
+GET {{host}}/transacciones
+Authorization: Bearer {{token}}
+
+### Obtener transaccion
+GET {{host}}/transacciones/{{transaccionId}}
+Authorization: Bearer {{token}}
+
+### Actualizar transaccion
+PUT {{host}}/transacciones/{{transaccionId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "monto": 30,
+  "descripcion": "Almuerzo actualizado"
+}
+
+### Resumen de presupuesto
+GET {{host}}/presupuesto/resumen
+Authorization: Bearer {{token}}
+
+### Eliminar transaccion
+DELETE {{host}}/transacciones/{{transaccionId}}
+Authorization: Bearer {{token}}

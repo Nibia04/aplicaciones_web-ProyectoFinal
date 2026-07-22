@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Presupuesto.Api/Presupuesto.Api.csproj" />
+    <Project Path="src/Presupuesto.AppHost/Presupuesto.AppHost.csproj" />
+    <Project Path="src/Presupuesto.Application/Presupuesto.Application.csproj" />
+    <Project Path="src/Presupuesto.Domain/Presupuesto.Domain.csproj" />
+    <Project Path="src/Presupuesto.Infrastructure/Presupuesto.Infrastructure.csproj" />
+    <Project Path="src/Presupuesto.ServiceDefaults/Presupuesto.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Presupuesto.Tests/Presupuesto.Tests.csproj" />
+  </Folder>
+</Solution>
