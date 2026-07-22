@@ -298,60 +298,6 @@ tests/
 # Planificacion por fases
 
 
-## Fase 6: Mejorar testing
-
-Objetivo: cubrir las capas principales del proyecto.
-
-Estado: completada.
-
-Acciones:
-
-- Mantener las pruebas actuales de API.
-- Crear pruebas de dominio:
-
-```text
-tests/domain/
-  test_transaccion.py
-```
-
-- Crear pruebas de aplicacion:
-
-```text
-tests/application/
-  fakes.py
-  test_auth_use_cases.py
-  test_transaccion_use_cases.py
-```
-
-- Crear pruebas de API por modulo:
-
-```text
-tests/api/
-  conftest.py
-  test_auth.py
-  test_transacciones.py
-  test_presupuesto.py
-```
-
-- Verificar casos importantes:
-  - registro exitoso,
-  - email duplicado,
-  - login correcto,
-  - login incorrecto,
-  - crear ingreso,
-  - crear gasto,
-  - listar transacciones propias,
-  - no acceder a transacciones de otro usuario,
-  - actualizar transaccion,
-  - eliminar transaccion,
-  - calcular resumen correcto.
-
-Resultado esperado:
-
-- El proyecto tendra testing por capas y no solo una prueba de flujo completo.
-- La suite actual valida dominio, casos de uso, endpoints y errores HTTP.
-- Resultado verificado: `23 passed`.
-
 ## Fase 7: Mejorar seguridad y configuracion
 
 Objetivo: evitar configuraciones sensibles escritas directamente en codigo.
