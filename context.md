@@ -68,14 +68,17 @@ La capa API existe y esta ubicada en:
 app/api/
 ```
 
-Contiene las rutas HTTP de FastAPI. Actualmente maneja autenticacion, transacciones y presupuesto. Esta capa funciona, pero todavia contiene demasiada logica de aplicacion y acceso directo a base de datos.
+Contiene las rutas HTTP de FastAPI. Actualmente maneja autenticacion, transacciones y presupuesto como una capa delgada sobre los casos de uso.
 
 Archivos principales:
 
+- `app/api/error_handlers.py`
 - `app/api/routes/auth.py`
 - `app/api/routes/transacciones.py`
 - `app/api/routes/presupuesto.py`
 - `app/api/dependencies.py`
+
+Estado actual: la API es una capa delgada. Resuelve dependencias, llama casos de uso y delega la traduccion de errores a manejadores centralizados.
 
 ### Application
 
@@ -255,6 +258,7 @@ Al avanzar las fases, se debe procurar que la organizacion final se parezca a es
 ```text
 app/
   api/
+    error_handlers.py
     dependencies.py
     routes/
       auth.py
@@ -386,6 +390,8 @@ Resultado esperado:
 
 Objetivo: dejar la API como una capa delgada.
 
+Estado: completada.
+
 Acciones:
 
 - Mantener los endpoints existentes.
@@ -398,6 +404,28 @@ Acciones:
 
 - Evitar consultas SQLAlchemy directamente dentro de rutas.
 - Estandarizar errores y respuestas.
+- Centralizar la traduccion de errores en:
+
+```text
+app/api/error_handlers.py
+```
+
+- Centralizar la creacion de repositorios y servicios en:
+
+```text
+app/api/dependencies.py
+```
+
+- Usar un formato consistente para errores:
+
+```json
+{
+  "error": {
+    "codigo": "codigo_del_error",
+    "mensaje": "Descripcion del error"
+  }
+}
+```
 
 Resultado esperado:
 

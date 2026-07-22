@@ -10,6 +10,9 @@ from datetime import date
 
 BASE_URL = "http://localhost:8000"
 
+# Script manual de ejemplos. Evita que pytest lo recoja como suite automatica.
+__test__ = False
+
 # Colores para terminal
 class Colors:
     GREEN = '\033[92m'

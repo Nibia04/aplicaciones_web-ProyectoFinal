@@ -51,7 +51,12 @@ def test_registro_con_email_duplicado():
 
     assert primer_registro.status_code == 201
     assert segundo_registro.status_code == 409
-    assert segundo_registro.json() == {"detail": "El email ya esta registrado"}
+    assert segundo_registro.json() == {
+        "error": {
+            "codigo": "email_ya_registrado",
+            "mensaje": "El email ya esta registrado",
+        }
+    }
 
 
 def test_login_con_password_incorrecto():
@@ -73,7 +78,12 @@ def test_login_con_password_incorrecto():
     )
 
     assert response.status_code == 401
-    assert response.json() == {"detail": "Credenciales invalidas"}
+    assert response.json() == {
+        "error": {
+            "codigo": "credenciales_invalidas",
+            "mensaje": "Credenciales invalidas",
+        }
+    }
 
 
 def test_registro_login_crear_transaccion_y_resumen():

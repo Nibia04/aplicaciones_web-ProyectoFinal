@@ -8,6 +8,7 @@ Backend con FastAPI, SQLite, SQLAlchemy y JWT para registrar transacciones de in
 app/
   main.py
   api/
+    error_handlers.py
     dependencies.py
     routes/
       auth.py
@@ -64,7 +65,18 @@ API -> Application -> Domain
 ### `app/api`
 
 Contiene rutas HTTP, dependencias de FastAPI y traduccion de errores a respuestas HTTP.
-Esta capa debe ser delgada: recibe solicitudes, llama a casos de uso y devuelve respuestas.
+Esta capa es delgada: recibe solicitudes, resuelve dependencias, llama a casos de uso y devuelve respuestas.
+
+Los errores esperados se devuelven con un formato consistente:
+
+```json
+{
+  "error": {
+    "codigo": "codigo_del_error",
+    "mensaje": "Descripcion del error"
+  }
+}
+```
 
 ### `app/application`
 
@@ -90,7 +102,8 @@ Contiene pruebas automatizadas. Actualmente hay pruebas de API; en siguientes fa
 - Fase 2 completada: dominio separado de SQLAlchemy; los modelos ORM viven en infraestructura.
 - Fase 3 completada: la logica principal de rutas fue movida a casos de uso en `app/application/use_cases`.
 - Fase 4 completada: casos de uso desacoplados de SQLAlchemy mediante puertos e implementaciones de repositorio.
-- Siguiente paso: mejorar la API y estandarizar respuestas/errores.
+- Fase 5 completada: API mejorada con dependencias reutilizables y errores/respuestas estandarizados.
+- Siguiente paso: ampliar testing por capas.
 
 ## Ejecutar
 
