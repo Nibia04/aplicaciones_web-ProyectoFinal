@@ -36,7 +36,7 @@ La API es el punto de composicion. Infrastructure implementa los contratos defin
 `src/Presupuesto.Domain` contiene el nucleo DDD sin dependencias externas:
 
 - Entidades: `Usuario`, `Transaccion`.
-- Value Objects: `Email`, `Nombre`, `Dinero`, `Descripcion`, `Categoria`.
+- Value Objects: `Email`, `Nombre`, `Contrasena`, `Dinero`, `Descripcion`, `Categoria`.
 - Eventos de dominio: `UsuarioRegistradoEventoDominio`, `TransaccionCreadaEventoDominio`, despachados despues de persistir y atendidos por manejadores desacoplados.
 - Encapsulamiento: setters privados, metodos semanticos y colecciones de solo lectura.
 - Contratos de repositorio: `IRepositorioUsuario`, `IRepositorioTransaccion`.
@@ -92,7 +92,6 @@ GET    /presupuesto/resumen
 
 - API ASP.NET Core.
 - PostgreSQL.
-- PgAdmin.
 - Variables de entorno y connection string `presupuesto`.
 
 ## Ejecutar
@@ -100,7 +99,7 @@ GET    /presupuesto/resumen
 Requisito: Docker Desktop debe estar corriendo para levantar PostgreSQL con Aspire.
 
 ```bash
-aspire start --project src/Presupuesto.AppHost/Presupuesto.AppHost.csproj
+aspire start --apphost src/Presupuesto.AppHost/Presupuesto.AppHost.csproj
 ```
 
 La API aplica migraciones EF Core automaticamente al iniciar.

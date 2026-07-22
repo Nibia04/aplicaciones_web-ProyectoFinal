@@ -41,7 +41,7 @@ La entrega principal es 100% .NET.
 Implementado en `src/Presupuesto.Domain`:
 
 - Entidades: `Usuario`, `Transaccion`.
-- Value Objects: `Email`, `Nombre`, `Dinero`, `Descripcion`, `Categoria`.
+- Value Objects: `Email`, `Nombre`, `Contrasena`, `Dinero`, `Descripcion`, `Categoria`.
 - Eventos de dominio: `UsuarioRegistradoEventoDominio`, `TransaccionCreadaEventoDominio`.
 - Encapsulamiento con setters privados y metodos semanticos.
 - Repositorios como contratos del dominio.
@@ -71,7 +71,6 @@ Implementado en `src/Presupuesto.AppHost`:
 
 - Orquesta la API.
 - Orquesta PostgreSQL.
-- Expone PgAdmin.
 - Inyecta la connection string `presupuesto`.
 
 ### Testing
@@ -107,7 +106,7 @@ dotnet test Presupuesto.slnx
 Ejecutar con Aspire:
 
 ```bash
-aspire start --project src/Presupuesto.AppHost/Presupuesto.AppHost.csproj
+aspire start --apphost src/Presupuesto.AppHost/Presupuesto.AppHost.csproj
 ```
 
 Crear nuevas migraciones:
@@ -122,6 +121,6 @@ dotnet tool run dotnet-ef migrations add NombreMigracion --project src/Presupues
 - Una prueba de arquitectura verifica que Domain no referencia Application, Infrastructure, API ni EF Core.
 - La prueba E2E levanta el AppHost con `Aspire.Hosting.Testing`, espera la salud de la API y ejecuta autorizacion, registro, login, CRUD y resumen contra endpoints reales.
 - El archivo `.http` guarda automaticamente el JWT y el identificador creado para ejecutar el flujo en orden.
-- Ultima verificacion local: 10 pruebas superadas, 0 fallidas y 0 omitidas.
+- Ultima verificacion local: 13 pruebas superadas, 0 fallidas y 0 omitidas.
 
 Docker Desktop debe estar iniciado antes de ejecutar `dotnet test Presupuesto.slnx`; una infraestructura no disponible produce un fallo real y nunca se reporta como una prueba aprobada.
